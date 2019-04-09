@@ -2,6 +2,8 @@ package com.nsc.backend.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.nsc.backend.entity.Address;
 
 //地址mapper映射接口
@@ -17,7 +19,7 @@ public interface AddressMapper {
 	//通过add的id查找address
 	Address findAddressById(Integer addId);
 	//通过addr的id和用户的userId查找address
-	Address findAddressByIdAndUserId(Integer userId,Integer addId);
+	Address findAddressByIdAndUserId( @Param("addId") Integer addId,@Param("userId") Integer userId);
 	
 	
 	

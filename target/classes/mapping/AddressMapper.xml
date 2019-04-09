@@ -144,7 +144,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			address.*
 			from address
 			where 
-			 user_id = #{0} and add_id = #{1} 
+			 add_id = #{addId}
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
 		</select>
 	</mapper>
 

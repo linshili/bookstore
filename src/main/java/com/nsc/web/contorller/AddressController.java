@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.nsc.backend.entity.Address;
 import com.nsc.backend.entity.User;
@@ -178,7 +177,7 @@ public class AddressController {
 	/**
 	 * 修改微信用户的地址
 	 * @param response
-	 * @param map {openId:"",addId:"" }
+	 * @param strmap {openId:"",addId:"" }
 	 * @return true/false
 	 */
 	@RequestMapping("modAddress") // Y-post
@@ -203,7 +202,7 @@ public class AddressController {
 
 			// 将所有的收货地址查出来，原来默认的为false，新的为true
 
-			Address addr = addressServiceImpl.findAddressByIdAndUserId(userByopenId.getUserId(),addId);
+			Address addr = addressServiceImpl.findAddressByIdAndUserId(addId,userByopenId.getUserId());
 			if(addr != null) {
 				addr.setAddUserName(userName);
 				addr.setAddPostalCode(postalCode);
