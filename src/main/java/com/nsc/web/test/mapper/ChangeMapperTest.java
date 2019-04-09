@@ -65,6 +65,14 @@ public class ChangeMapperTest {
 //
 //		sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 //		sqlSession = sqlSessionFactory.openSession();
+//		TransactionFactory transactionFactory = new JdbcTransactionFactory();
+//		Environment environment = new Environment("development", transactionFactory, dataSource);
+//		configuration = new Configuration(environment);
+//		configuration.addMappers("com.nsc.backend.mapper");
+//
+//		sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+//		sqlSession = sqlSessionFactory.openSession();
+
 
 	}
 
