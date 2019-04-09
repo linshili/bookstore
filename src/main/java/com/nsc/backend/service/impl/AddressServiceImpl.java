@@ -41,5 +41,13 @@ public class AddressServiceImpl implements IAddressService {
 	public Address findAddressById(Integer addId) {
 		return addMapper.findAddressById(addId);
 	}
+
+	/**
+	 * 通过addr的id和用户的userId查找address
+	 */
+	@Override
+	public Address findAddressByIdAndUserId(Integer userId, Integer addId) {
+		return addMapper.findAddressByIdAndUserId(userId, addId);
+	}
 	
 }

@@ -139,6 +139,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			where 
 			 add_id = #{addId}
 		</select>
+		<select id="findAddressByIdAndUserId"  resultMap="addResultMap">
+			select 
+			address.*
+			from address
+			where 
+			 user_id = #{0} and add_id = #{1} 
+		</select>
 	</mapper>
 
 
