@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nsc.backend.mapper.OrderGoodsMapper" >
+  <resultMap id="GoodsResultMap" type="com.nsc.backend.entity.OrderGoods" >
+    <id column="orderGoods_id" property="ordergoodsId" jdbcType="INTEGER" />
+    <result column="order_number" property="orderNumber" jdbcType="VARCHAR" />
+    <result column="ordergoods_number" property="ordergoodsNumber" jdbcType="VARCHAR" />
+    <result column="order_state" property="orderState" jdbcType="INTEGER" />
+    <result column="orderGoods_count" property="ordergoodsCount" jdbcType="INTEGER" />
+    <result column="invoice" property="Invoice" jdbcType="INTEGER" />
+    <result column="orderGoods_IsReturnGoods" property="ordergoodsIsreturngoods" jdbcType="INTEGER" />
+    <result column="orderGoods_TotalPrice" property="ordergoodsTotalprice" jdbcType="INTEGER" />
+    <result column="orderReturn_status" property="orderreturnStatus" jdbcType="INTEGER" />
+    <result column="orderReturn_Reason" property="orderreturnReason" jdbcType="VARCHAR" />
+    
+    	<!-- 封装商店信息 -->
+		<association property="store" javaType="com.nsc.backend.entity.Store">
+			<id column="store_id" property="storeId" jdbcType="INTEGER" />
+    		<result column="store_sn" property="storeSn" jdbcType="VARCHAR" />
+		</association>
+		<!-- 封装书籍信息 -->		
+		<association property="book" javaType="com.nsc.backend.entity.Book">
+			<id     column="book_id" property="bookId"/>
+			<result column="book_ISBN" property="bookISBN"/>
+			<result column="book_name" property="bookName"/>
+			<result column="book_unitPrice" property="bookUnitPrice"/>
+			<result column="book_preface" property="bookPreface"/>
+			<result column="book_conBrief" property="bookConBrief"/>
+			<result column="book_authorBrief" property="bookAuthorBrief"/>
+			<result column="book_catalog" property="bookCatalog"/>
+			<result column="book_author" property="bookAuthor"/>
+			<result column="book_pubTime" property="bookPubTime"/>
+			<result column="book_priTime" property="bookPriTime"/>
+			<result column="book_edtion" property="bookEdtion"/>
+			<result column="book_impression" property="bookImpression"/>
+			<result column="book_size" property="bookSize"/>
+			<result column="book_paper" property="bookPaper"/>
+			<result column="book_packing" property="bookPacking"/>
+			<result column="book_suit" property="bookSuit"/>
+			<result column="book_imgUrl" property="bookImgUrl"/>
+			<result column="book_stock" property="bookStock"/>
+			<result column="book_validityPeriod" property="bookValidityPeriod"/>
+			<result column="book_originalPrice" property="bookOriginalPrice"/>
+			<result column="book_isDetele" property="bookIsDetele"/>
+			<result column="book_keyWord1" property="bookKeyWord1"/>
+			<result column="book_keyWord2" property="bookKeyWord2"/>
+			<result column="book_seriesAb" property="bookSeriesAb"/>
+			<result column="book_publicSort" property="bookPublicSort"/>
+			<result column="book_scores" property="bookScores"/>
+			<result column="book_code" property="bookCode"/>
+			<result column="book_picture" property="bookPicture"/>
+			<result column="book_titles" property="bookTitles"/>
+			<result column="book_measurementUnit" property="bookMeasurementUnit"/>
+			<result column="publish_house" property="publish_house"/>
+			<result column="book_discount" property="bookDiscount"/>
+			<result column="book_note" property="bookNote"/>
+			<result column="order_freight" property="orderFreight"/>
+			<result column="store_id" property="storeId"/>
+			<result column="store_name" property="storeName"/>
+			
+		</association>
+		<!-- 封装主订单信息 -->
+		<association property="orderBase" javaType="com.nsc.backend.entity.OrderBase">
+			<id column="order_id" property="orderId" jdbcType="INTEGER" />
+		    <result column="order_number" property="orderNumber" jdbcType="VARCHAR" />
+		    <result column="order_time" property="orderTime" jdbcType="TIMESTAMP" />
+		    <result column="order_payTime" property="orderPaytime" jdbcType="TIMESTAMP" />
+		    <result column="order_endTime" property="orderEndtime" jdbcType="TIMESTAMP" />
+		    <result column="order_totalAcount" property="orderTotalacount" jdbcType="INTEGER" />
+		    <result column="tradeTable_method" property="tradetableMethod" jdbcType="INTEGER" />
+		    <result column="tradeTable_number" property="tradetableNumber" jdbcType="VARCHAR" />
+		    <result column="order_ispay" property="orderIspay" jdbcType="INTEGER" />
+		    <result column="order_isequal" property="orderIsequal" jdbcType="INTEGER" />
+		</association>
+		
+  </resultMap>
+  <sql id="Base_Column_List" >
+    orderGoods_id,order_number, ordergoods_number, order_state, orderGoods_count,
+    invoice,  orderGoods_IsReturnGoods, orderGoods_TotalPrice, order_freight, 
+    order_reightRisk, orderReturn_status, orderReturn_Reason
+  </sql>
+	  
+  	<!-- 保存子订单 -->
+	<insert id="saveOrderGoods" parameterType="com.nsc.backend.entity.OrderGoods" >
+	<selectKey resultType="Integer" order="AFTER" keyProperty="ordergoodsId">
+          SELECT LAST_INSERT_ID()
+      	</selectKey>
+    insert into bookstore.order_goods
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ordergoodsId != null" >
+        orderGoods_id,
+      </if>
+      <if test="orderBase != null" >
+        order_id,
+      </if>
+      <if test="orderNumber != null" >
+        order_number,
+      </if>
+      <if test="ordergoodsNumber != null" >
+        ordergoods_number,
+      </if>
+      <if test="orderState != null" >
+        order_state,
+      </if>
+      <if test="ordergoodsCount != null" >
+        orderGoods_count,
+      </if>
+      <if test="Invoice != null" >
+        invoice,
+      </if>
+      <if test="ordergoodsIsreturngoods != null" >
+        orderGoods_IsReturnGoods,
+      </if>
+      <if test="ordergoodsTotalprice != null" >
+        orderGoods_TotalPrice,
+      </if>
+      <if test="book != null" >
+        book_id,
+      </if>
+      <if test="store != null" >
+        store_id,
+      </if>
+      <if test="orderreturnStatus != null" >
+        orderReturn_status,
+      </if>
+      <if test="orderreturnReason != null" >
+        orderReturn_Reason,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ordergoodsId != null" >
+        #{ordergoodsId,jdbcType=INTEGER},
+      </if>
+      <if test="orderBase != null" >
+        #{orderBase.orderId,jdbcType=INTEGER},
+      </if>
+     <if test="orderNumber != null" >
+        #{orderNumber,jdbcType=INTEGER},
+      </if>
+      <if test="ordergoodsNumber != null" >
+        #{ordergoodsNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="orderState != null" >
+        #{orderState,jdbcType=INTEGER},
+      </if>
+      <if test="ordergoodsCount != null" >
+        #{ordergoodsCount,jdbcType=INTEGER},
+      </if>
+      <if test="invoice != null" >
+        #{invoice,jdbcType=TINYINT},
+      </if>
+      <if test="ordergoodsIsreturngoods != null" >
+        #{ordergoodsIsreturngoods,jdbcType=INTEGER},
+      </if>
+      <if test="ordergoodsTotalprice != null" >
+        #{ordergoodsTotalprice,jdbcType=INTEGER},
+      </if>
+      <if test="book != null" >
+        #{book.bookId,jdbcType=INTEGER},
+      </if>
+      <if test="store != null" >
+        #{store.storeId,jdbcType=INTEGER},
+      </if>
+      <if test="orderreturnStatus != null" >
+        #{orderreturnStatus,jdbcType=INTEGER},
+      </if>
+      <if test="orderreturnReason != null" >
+        #{orderreturnReason,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 根据主订单修改所有对应的子订单状态 -->
+  <update id="updateOrderState" parameterType="String">
+  		update order_goods   set   
+            order_state = 1
+        where order_number = #{0}
+  </update>
+  
+  <!-- 子订单对应新的主订单 -->
+  <update id="updateOrderNumberId" >
+  	update order_goods 
+  	set order_id= #{1},
+  		order_number = #{2}
+  		where ordergoods_number = #{0}
+  </update>
+  
+  <!-- 查找用户的所有订单 -->
+  <select id="showOrderGoods" parameterType="List" resultMap="GoodsResultMap">
+  		select order_goods.*,
+  			   order_base.*,
+  			   book.*
+		from order_goods,order_base,book
+		where order_goods.book_id = book.book_id and
+			 order_goods.order_id = order_base.order_id and
+			 order_goods.order_state in(0,1,3) and 
+			 order_goods.order_id in 
+			 <foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item.orderId}			
+			</foreach>
+  </select>
+  
+  <!-- 查找用户支付/未支付订单 -->
+	<select id="showOrderGoodsByIspay" parameterType="List" resultMap="GoodsResultMap">
+		select order_goods.*,
+  			   order_base.*,
+  			   book.*
+		from order_goods,order_base,book
+		where order_goods.book_id = book.book_id and
+			 order_goods.order_id = order_base.order_id and
+			 reder_goods.order_state=#{1} and
+			 order_goods.order_id in 
+			 <foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item.orderId}			
+			</foreach>
+	</select>
+	
+	<!-- 逻辑删除子订单 -->
+	<update id="updateOGoodsState" >
+		update order_goods
+		set order_state = #{1}
+		where ordergoods_number = #{0}
+	</update>
+</mapper>
