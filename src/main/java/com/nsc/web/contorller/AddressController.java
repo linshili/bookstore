@@ -21,6 +21,7 @@ import com.nsc.backend.entity.User;
 import com.nsc.backend.service.IAddressService;
 import com.nsc.backend.service.IUserService;
 import com.nsc.web.util.backstate.BackState;
+import com.nsc.web.util.backstate.OpState;
 
 //管理用户收货地址
 @Controller
@@ -126,9 +127,9 @@ public class AddressController {
 	// 修改用户的默认地址
 	@RequestMapping("modifyDeAdd")
 	@ResponseBody
-	public BackState modifyDeAdd(@RequestBody Map<String,Object> map) {
+	public Boolean modifyDeAdd(@RequestBody Map<String,Object> map) {
 		// 返回状态码
-		BackState bs = new BackState();
+		System.out.println("openId=" + map.get("openId") + " addId=" + map.get("addId"));
 		try {
 			String openId = (String) map.get("openId");
 			Integer addId = (Integer) map.get("addId");
@@ -149,12 +150,11 @@ public class AddressController {
 					addressServiceImpl.updateAddress(add);
 				}
 			}
-			bs.setStateName("HTTP State 200");
+			return OpState.OK;
 
 		}catch(Exception e) {
-			bs.setStateName("Error");
+			return OpState.ERROR;
 		}
-		return bs;
 	}
 
 	// 加载用户的默认地址
@@ -175,14 +175,51 @@ public class AddressController {
 		return;
 	}
 	
+	/**
+	 * 修改微信用户的地址
+	 * @param response
+	 * @param map {openId:"",addId:"" }
+	 * @return true/false
+	 */
+	@RequestMapping("modAddress") // Y-post
 	@ResponseBody
-	public void modifiedAddress(HttpServletResponse response, @RequestBody String openId) {
+	public Boolean modifiedAddress(HttpServletResponse response, @RequestBody String strmap) {
+		
 		try {
-			
+			JSONObject json = JSONObject.parseObject(strmap);
+			String openId = (String) json.get("openId");
+			Integer addId = (Integer) json.get("addId");
+			System.out.println("info--modifiedAddress --\n"+addId);
+			String userName = (String) json.get("userName");
+			String postalCode = (String) json.get("postalCode");
+			String provinceName = (String) json.get("provinceName");
+			String cityName = (String) json.get("cityName");
+			String countyName = (String) json.get("countyName");
+			String detailInfo = (String) json.get("detailInfo");
+			String nationalCode = (String) json.get("nationalCode");
+			String telNumber = (String) json.get("telNumber");
+			User userByopenId = userServiceImpl.findUserByopenId(openId);
+			System.out.println("userByopenId=" + userByopenId);
+
+			// 将所有的收货地址查出来，原来默认的为false，新的为true
+
+			Address addr = addressServiceImpl.findAddressByIdAndUserId(userByopenId.getUserId(),addId);
+			if(addr != null) {
+				addr.setAddUserName(userName);
+				addr.setAddPostalCode(postalCode);
+				addr.setAddCity(cityName);
+				addr.setAddCounty(countyName);
+				addr.setAddDetailInfo(detailInfo);
+				addr.setAddNationalCode(nationalCode);
+				addr.setAddTele(telNumber);
+				addressServiceImpl.updateAddress(addr);
+			}else {
+				return OpState.ERROR;
+			}
+			return OpState.OK;
 		}catch(Exception e) {
-			
+			return OpState.ERROR;
 		}
-		return ;
 	}
 
 }

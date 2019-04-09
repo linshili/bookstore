@@ -16,6 +16,8 @@ public interface AddressMapper {
 	Address findDefaultAdd(Integer userId);
 	//通过add的id查找address
 	Address findAddressById(Integer addId);
+	//通过addr的id和用户的userId查找address
+	Address findAddressByIdAndUserId(Integer userId,Integer addId);
 	
 	
 	
