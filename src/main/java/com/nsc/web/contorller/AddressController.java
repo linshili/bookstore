@@ -174,5 +174,15 @@ public class AddressController {
 		System.out.println("findDeAddress is seccess");
 		return;
 	}
+	
+	@ResponseBody
+	public void modifiedAddress(HttpServletResponse response, @RequestBody String openId) {
+		try {
+			
+		}catch(Exception e) {
+			
+		}
+		return ;
+	}
 
 }
