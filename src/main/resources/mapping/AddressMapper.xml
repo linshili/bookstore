@@ -20,6 +20,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		
 		<!--接受用户的收货的地址 -->
 		<insert id="saveWeiAdd" parameterType="address">
+			<!-- selectKey 将 SELECT LAST_INSERT_ID() 执行结果放入传入的model的中主键中-->
+			<!-- keyProperty 即传入的model的主键的属性-->
+			<!-- order="AFTER" 即表示 SELECT LAST_INSERT_ID() 在insert执行之后执行，多用于自增主键-->
+			<!-- order="BEFORE" 即表示 SELECT LAST_INSERT_ID() 在insert执行之前执行，多用于非自增主键，如uuid主键（SELECT uuid()）-->
+			<!-- resultType="" 即表示 SELECT LAST_INSERT_ID() 返回结果的类型-->
 			<selectKey resultType="Integer" order="AFTER" keyProperty="addId">
           		SELECT LAST_INSERT_ID()
       		</selectKey>
