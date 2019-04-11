@@ -9,7 +9,7 @@ import com.nsc.backend.entity.Address;
 //地址mapper映射接口
 public interface AddressMapper {
 	//接受微信授权地址，并且如果能够接受到的话，设为默认地址
-	void saveWeiAdd(Address add);
+	int saveWeiAdd(Address add);
 	//获取用户的所有与收货地址
 	List<Address> findAllAddress(Integer userId);
 	//更新收货地址信息

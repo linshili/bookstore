@@ -5,7 +5,9 @@ package com.nsc.backend.entity;
  *
  */
 public class User {
+	
 	private Integer userId;
+	private String  unionId;
 	private String  userOpenId;
 	private String  userNickName;//用户昵称
 	private String 	userGender;//用户性别
@@ -17,15 +19,14 @@ public class User {
 	private String userPostalCode;
 	private String userNote;
 	
-	
-	
-	
+
+
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", userOpenId=" + userOpenId + ", userNickName=" + userNickName
-				+ ", userGender=" + userGender + ", userCity=" + userCity + ", userProvince=" + userProvince
-				+ ", userAvatarUrl=" + userAvatarUrl + ", userTelephone=" + userTelephone + ", userRegion=" + userRegion
-				+ ", userPostalCode=" + userPostalCode + ", userNote=" + userNote + "]";
+		return "User [userId=" + userId + ", unionId=" + unionId + ", userOpenId=" + userOpenId + ", userNickName="
+				+ userNickName + ", userGender=" + userGender + ", userCity=" + userCity + ", userProvince="
+				+ userProvince + ", userAvatarUrl=" + userAvatarUrl + ", userTelephone=" + userTelephone
+				+ ", userRegion=" + userRegion + ", userPostalCode=" + userPostalCode + ", userNote=" + userNote + "]";
 	}
 
 
@@ -68,7 +69,15 @@ public class User {
 		this.userNote = userNote;
 	}
 
+	public String getUnionId() {
+		return unionId;
+	}
 
+
+	public void setUnionId(String unionId) {
+		this.unionId = unionId;
+	}
+	
 	public Integer getUserId() {
 		return userId;
 	}

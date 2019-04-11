@@ -8,7 +8,7 @@ import com.nsc.backend.entity.Address;
 public interface IAddressService {
 	//接受微信授权地址，并且如果能够接受到的话，设为默认地址
 	
-	void saveWeiAdd(Address add);
+	boolean saveWeiAdd(Address add);
 	//获取用户的所有收货地址
 	List<Address> findAllAddress(Integer userId);
 	//更新address信息
