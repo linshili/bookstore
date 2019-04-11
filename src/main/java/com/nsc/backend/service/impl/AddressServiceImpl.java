@@ -17,8 +17,13 @@ public class AddressServiceImpl implements IAddressService {
 	private AddressMapper addMapper;
 	
 	//接受微信授权地址，并且如果能够接受到的话，设为默认地址
-	public void saveWeiAdd(Address add) {
-		addMapper.saveWeiAdd(add);
+	public boolean saveWeiAdd(Address add) {
+		int result = addMapper.saveWeiAdd(add);
+		if(result == 1) {
+			//保存成功
+			return true;
+		}
+		return false;
 	}
 
 	//获取用户的所有与收货地址

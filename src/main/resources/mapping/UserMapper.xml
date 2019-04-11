@@ -5,35 +5,182 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.nsc.backend.mapper.UserMapper">
 	<!-- 配置基本返回用户信息 -->
 	<resultMap type="user" id="userResultMap">
-		<id column="user_id" property="userId"/>
-		<result column="user_openId" property="userOpenId"/>
-		<result column="user_nickName" property="userNickName"/>
-		<result column="user_gender" property="userGender"/>
-		<result column="user_city" property="userCity"/>
-		<result column="user_province" property="userProvince"/>
-		<result column="user_avatarUrl" property="userAvatarUrl"/>
-		<result column="user_telephone" property="userTelephone"/>
-		<result column="user_region" property="userRegion"/>
-		<result column="user_postalCode" property="userPostalCode"/>
-		<result column="user_note" property="userNote"/>
+		<id column="user_id" property="userId" />
+		<result column="user_openId" property="userOpenId" />
+		<result column="user_unionId" property="unionId" />
+		<result column="user_nickName" property="userNickName" />
+		<result column="user_gender" property="userGender" />
+		<result column="user_city" property="userCity" />
+		<result column="user_province" property="userProvince" />
+		<result column="user_avatarUrl" property="userAvatarUrl" />
+		<result column="user_telephone" property="userTelephone" />
+		<result column="user_region" property="userRegion" />
+		<result column="user_postalCode" property="userPostalCode" />
+		<result column="user_note" property="userNote" />
 	</resultMap>
-		
-	<!-- 根据用户openid查找出用户 -->	
+
+	<sql id="Base_Column_List">
+		user_id, user_unionId, user_openId, user_nickName,
+		user_gender, user_city,
+		user_province,
+		user_avatarUrl, user_telephone,
+		user_region, user_postalCode, user_note
+	</sql>
+	<sql id="uuo_Column_List">
+		<if test="userOpenId != null">
+			;INSERT INTO user_unionid_openid (user_unionId,user_openId) VALUES (#{unionId},#{userOpenId});		
+		</if>
+	</sql>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem"
+										open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+
+	<!-- 根据用户openid查找出用户 -->
 	<select id="findUserByopenId" parameterType="String" resultMap="userResultMap">
 		select
 		user.user_id,
 		user.user_nickName,
 		user.user_openId
-		from  user
-		where user.user_openId = #{openId}
+		from user
+		where
+		user.user_openId = #{openId}
 	</select>
-	
+	<!-- 根据条件查询用户 -->
+	<select id="selectUserByExample" parameterType="com.nsc.backend.entity.UserExample"
+		resultMap="userResultMap">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from user
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+
 	<!-- 保存user到数据库 -->
-	<insert id="saveUser" parameterType="user" >
-		insert into 
-		user  (user_openId)
+	<insert id="saveUser" parameterType="user">
+		insert into
+		user
+		(user_openId)
 		values (#{userOpenId})
 	</insert>
+	<!-- 保存user到数据库(选择性保存) -->
+	<insert id="insertUserSelective" parameterType="com.nsc.backend.entity.User">
+		insert into user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="unionId != null">
+				user_unionId,
+			</if>
+			<if test="userOpenId != null">
+				user_openId,
+			</if>
+			<if test="userNickName != null">
+				user_nickName,
+			</if>
+			<if test="userGender != null">
+				user_gender,
+			</if>
+			<if test="userCity != null">
+				user_city,
+			</if>
+			<if test="userProvince != null">
+				user_province,
+			</if>
+			<if test="userAvatarUrl != null">
+				user_avatarUrl,
+			</if>
+			<if test="userTelephone != null">
+				user_telephone,
+			</if>
+			<if test="userRegion != null">
+				user_region,
+			</if>
+			<if test="userPostalCode != null">
+				user_postalCode,
+			</if>
+			<if test="userNote != null">
+				user_note,
+			</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="unionId != null">
+				#{unionId,jdbcType=VARCHAR},
+			</if>
+			<if test="userOpenId != null">
+				#{userOpenId,jdbcType=VARCHAR},
+			</if>
+			<if test="userNickName != null">
+				#{userNickName,jdbcType=VARCHAR},
+			</if>
+			<if test="userGender != null">
+				#{userGender,jdbcType=VARCHAR},
+			</if>
+			<if test="userCity != null">
+				#{userCity,jdbcType=VARCHAR},
+			</if>
+			<if test="userProvince != null">
+				#{userProvince,jdbcType=VARCHAR},
+			</if>
+			<if test="userAvatarUrl != null">
+				#{userAvatarUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="userTelephone != null">
+				#{userTelephone,jdbcType=VARCHAR},
+			</if>
+			<if test="userRegion != null">
+				#{userRegion,jdbcType=VARCHAR},
+			</if>
+			<if test="userPostalCode != null">
+				#{userPostalCode,jdbcType=VARCHAR},
+			</if>
+			<if test="userNote != null">
+				#{userNote,jdbcType=VARCHAR},
+			</if>
+
+		</trim>
+		<include refid="uuo_Column_List" />
+	</insert>
+	
 </mapper>
 
 

@@ -36,7 +36,6 @@ import com.nsc.web.util.weixin.vo.OAuthJsToken;
 import com.nsc.web.vo.Json;
 
 /**
- * @Description: 本示例仅供参考，请根据自己的使用情景进行修改
  * @Date: 2018/4/8
  * @Author: wcf
  */
