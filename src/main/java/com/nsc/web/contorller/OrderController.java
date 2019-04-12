@@ -89,7 +89,7 @@ public class OrderController {
 		Iterator<Cart> cit = clist.iterator();
 		while(cit.hasNext()){
 			Cart cart = cit.next();
-			subtotal= subtotal+cart.getCartTotalUndiscount();
+			subtotal= subtotal+cart.getCartSum();
 		}
 		//订单和订单项,在订单类中得到订单项，然后保存到数据库
 		order.setOrderTime(parse);
@@ -107,7 +107,7 @@ public class OrderController {
 			Cart cart = cit1.next();
 			OrderItem oit = new OrderItem();
 			oit.setBook(cart.getBook());
-			oit.setOitemSubtotal(cart.getCartTotalUndiscount());
+			oit.setOitemSubtotal(cart.getCartSum());
 			oit.setOitemUnitPrice(cart.getCartUnitPrice());
 			oit.setOitemCount(cart.getCartCount());
 			oit.setOrder(order);
