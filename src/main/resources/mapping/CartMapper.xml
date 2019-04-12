@@ -3,74 +3,189 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nsc.backend.mapper.CartMapper">
-	
+
+	<resultMap id="BaseResultMap" type="com.nsc.backend.entity.Cart">
+		<id column="cart_id" jdbcType="INTEGER" property="cartId" />
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="user_unionId" jdbcType="VARCHAR" property="userUnionId" />
+		<result column="user_openId" jdbcType="VARCHAR" property="userOpenId" />
+		<result column="book_id" jdbcType="INTEGER" property="bookId" />
+		<result column="cart_joinCartTime" jdbcType="TIMESTAMP"
+			property="cartJoinCartTime" />
+		<result column="cart_sum" jdbcType="DOUBLE" property="cartSum" />
+		<result column="cart_unitPrice" jdbcType="DECIMAL" property="cartUnitPrice" />
+		<result column="cart_count" jdbcType="INTEGER" property="cartCount" />
+		<result column="cart_IsDeleted" jdbcType="TINYINT" property="cartIsDeleted" />
+		<result column="cart_isCheck" jdbcType="TINYINT" property="cartIsCheck" />
+	</resultMap>
+
 	<!-- 配置查找出cart，外键user，book一对一的resultMap -->
 	<resultMap type="cart" id="cartResultMap">
 		<id column="cart_id" property="cartId" />
-		<result column="cart_joinCartTime" property="cartJoinTime"/>		
-		<result column="cart_totalUndiscount" property="cartTotalUndiscount"/>		
-		<result column="cart_unitPrice" property="cartUnitPrice"/>		
-		<result column="cart_count" property="cartCount"/>
-		<result column="cart_isCheck" property="cartIsCheck"/>
+		<result column="cart_joinCartTime" property="cartJoinTime" />
+		<result column="cart_totalUndiscount" property="cartTotalUndiscount" />
+		<result column="cart_unitPrice" property="cartUnitPrice" />
+		<result column="cart_count" property="cartCount" />
+		<result column="cart_isCheck" property="cartIsCheck" />
 		<!-- 封装user信息 -->
 		<association property="user" javaType="com.nsc.backend.entity.User">
-			<id column="user_id" property="userId"/>
-			<id column="user_openId" property="userOpenId"/>
-			<id column="user_nickName" property="userNickName"/>
+			<id column="user_id" property="userId" />
+			<id column="user_unionId" property="unionId" />
+			<id column="user_openId" property="userOpenId" />
+			<id column="user_nickName" property="userNickName" />
 		</association>
-		<!-- 如果存在可以不进行封装 -->		
+		<!-- 如果存在可以不进行封装 -->
 		<association property="book" javaType="com.nsc.backend.entity.Book">
-			<id column="book_id" property="bookId"/>
-			<result column="book_ISBN" property="bookISBN"/>
-			<result column="book_name" property="bookName"/>
-			<result column="book_unitPrice" property="bookUnitPrice"/>
-			<result column="book_preface" property="bookPreface"/>
-			<result column="book_conBrief" property="bookConBrief"/>
-			<result column="book_authorBrief" property="bookAuthorBrief"/>
-			<result column="book_catalog" property="bookCatalog"/>
-			<result column="book_author" property="bookAuthor"/>
+			<id column="book_id" property="bookId" />
+			<result column="book_ISBN" property="bookISBN" />
+			<result column="book_name" property="bookName" />
+			<result column="book_unitPrice" property="bookUnitPrice" />
+			<result column="book_preface" property="bookPreface" />
+			<result column="book_conBrief" property="bookConBrief" />
+			<result column="book_authorBrief" property="bookAuthorBrief" />
+			<result column="book_catalog" property="bookCatalog" />
+			<result column="book_author" property="bookAuthor" />
 
 			<!-- <result column="book_press" property="bookPress"/> -->
 
-			<result column="book_pubTime" property="bookPubTime"/>
-			<result column="book_priTime" property="bookPriTime"/>
-			<result column="book_paper" property="bookPaper"/>
-			<result column="book_packing" property="bookPacking"/>
-			<result column="book_suit" property="bookSuit"/>
-			<result column="book_stock" property="bookStock"/>
-			<result column="book_validityPeriod" property="bookValidityPeriod"/>
-		</association>	
+			<result column="book_pubTime" property="bookPubTime" />
+			<result column="book_priTime" property="bookPriTime" />
+			<result column="book_paper" property="bookPaper" />
+			<result column="book_packing" property="bookPacking" />
+			<result column="book_suit" property="bookSuit" />
+			<result column="book_stock" property="bookStock" />
+			<result column="book_validityPeriod" property="bookValidityPeriod" />
+		</association>
 		<!-- 封装distributor信息 -->
-		<association property="distributor" javaType="com.nsc.backend.entity.Distributor">
-			<id column="distributor_id" property="disId"/>
-			<result column="distributor_press" property="disPress"/>
-			<result column="distributor_province" property="disProvince"/>
-			<result column="distributor_city" property="disCity"/>
-			<result column="distributor_contact" property="disContact"/>
-			<result column="distributor_conPhone" property="disConphone"/>
-			<result column="distributor_landline" property="disLandline"/>
-			<result column="distributor_note" property="disNote"/>
-		</association>	
-		<!-- 封装商店信息 -->	
+		<!-- <association property="distributor" javaType="com.nsc.backend.entity.Distributor">
+			<id column="distributor_id" property="disId" />
+			<result column="distributor_press" property="disPress" />
+			<result column="distributor_province" property="disProvince" />
+			<result column="distributor_city" property="disCity" />
+			<result column="distributor_contact" property="disContact" />
+			<result column="distributor_conPhone" property="disConphone" />
+			<result column="distributor_landline" property="disLandline" />
+			<result column="distributor_note" property="disNote" />
+		</association> -->
+		<!-- 封装商店信息 -->
 		<association property="store" javaType="com.nsc.backend.entity.Store">
 			<id column="store_id" property="storeId" jdbcType="INTEGER" />
-    		<result column="store_sn" property="storeSn" jdbcType="VARCHAR" />
-		</association>	
+			<result column="store_sn" property="storeSn" jdbcType="VARCHAR" />
+		</association>
 	</resultMap>
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem"
+										open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem"
+										open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		cart_id, user_id, user_unionId, user_openId, book_id,
+		cart_joinCartTime,
+		cart_sum,
+		cart_unitPrice, cart_count, cart_IsDeleted,
+		cart_isCheck
+	</sql>
+
+	<select id="selectByExample" parameterType="pojo.CartExample"
+		resultMap="BaseResultMap">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from cart
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from cart
+		where cart_id = #{cart_id,jdbcType=INTEGER}
+	</select>
+
+
 	<!-- 查找出bookId关联的cart表，如果不存在，创建新的cart保存，存在只需要改变count一个属性 -->
-	<select id="getCartByBookId"  resultMap="cartResultMap">
-		select 
+	<select id="getCartByBookId" resultMap="cartResultMap">
+		select
 		cart.* ,
 		user.user_openId,
 		user.user_id,
 		book.book_id,
 		book.book_name
-		from cart ,user,book
-		where cart.book_id = #{0}  	     
-		and cart.user_openId = #{1}  
-		
+		from cart
+		,user,book
+		where cart.book_id = #{0}
+		and cart.user_openId = #{1}
+
 	</select>
-	
+
 	<!-- 根据cartId的list集合，将List<Cart>查询出来 -->
 	<select id="findCartByList" resultMap="cartResultMap">
 		SELECT
@@ -78,36 +193,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		book.*,
 		user.*
 		from cart
-		LEFT  JOIN book
-		on cart.book_id = book.book_id
-		LEFT  JOIN user
-		on  cart.user_openId = user.user_openId
-		where cart.cart_id  in
-		<foreach collection="list" item="item" open="(" close=")" separator=",">
-			#{item}			
+		LEFT JOIN book
+		on cart.book_id =
+		book.book_id
+		LEFT JOIN user
+		on cart.user_openId = user.user_openId
+		where
+		cart.cart_id in
+		<foreach collection="list" item="item" open="(" close=")"
+			separator=",">
+			#{item}
 		</foreach>
 	</select>
-	
+
 	<!-- cartid查找出cart -->
 	<select id="findCartByCartId" parameterType="Integer" resultMap="cartResultMap">
-			select 
-			cart.* from cart
-			where cart_id = #{cartId}
+		select
+		cart.* from cart
+		where cart_id = #{cartId}
 	</select>
-	
+
 	<!-- storeid查找出被选中的cart -->
-	<select id="findPayCartByStoreId" parameterType="Integer" resultMap="cartResultMap">
-			select cart.*
-			from  cart , book ,store
-			where cart.cart_isCheck=1 
-				and store.store_id=#{storeId}
-				and book.store_id=store.store_id 
-				and cart.book_id=book.book_id
+	<select id="findPayCartByStoreId" parameterType="Integer"
+		resultMap="cartResultMap">
+		select cart.*
+		from cart , book ,store
+		where
+		cart.cart_isCheck=1
+		and store.store_id=#{storeId}
+		and
+		book.store_id=store.store_id
+		and cart.book_id=book.book_id
 	</select>
-	
-	<!--当用户修改购物车数量，更新购物车信息 -->	
+
+	<!--当用户修改购物车数量，更新购物车信息 -->
 	<update id="updateBookCount" parameterType="cart">
-		update cart 
+		update cart
 		<trim prefix="set" suffixOverrides=",">
 			<if test="cartJoinTime!=null">cart_joinCartTime = #{cartJoinTime} ,</if>
 			<if test="cartCount!=null"> cart_count= #{cartCount} ,</if>
@@ -118,20 +239,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</trim>
 		where cart_id = #{cartId}
 	</update>
-	
+
 	<!-- 下单时被选中的cart 需要改其是否被选中的状态 -->
 	<update id="isCheck" parameterType="java.util.List">
-		update cart 
-			set cart_isCheck = 1 
+		update cart
+		set cart_isCheck = 1
 		where cart_id in
-		<foreach collection="list" item="item" open="(" close=")" separator="," index=""> 
-            #{item}  
-        </foreach>
+		<foreach collection="list" item="item" open="(" close=")"
+			separator="," index="">
+			#{item}
+		</foreach>
 	</update>
-	
+
 	<!-- 更新数据库中购物车信息 -->
-	<update id="updateCart" parameterType="cart" >
-		update cart 
+	<update id="updateCart" parameterType="cart">
+		update cart
 		<trim prefix="set" suffixOverrides=",">
 			<if test="cartJoinTime!=null">cart_joinCartTime = #{cartJoinTime} ,</if>
 			<if test="cartCount!=null"> cart_count= #{cartCount} ,</if>
@@ -143,14 +265,104 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where book_id = #{book.bookId}
 		and user_openId = #{user.userOpenId}
 	</update>
-	<!-- 保存购车信息到数据库 -->
-	<insert id="saveCart" parameterType="cart" >
-	  <selectKey resultType="Integer" order="AFTER" keyProperty="cartId">
-          SELECT LAST_INSERT_ID()
-      </selectKey>
+
+	<insert id="insert" parameterType="pojo.Cart">
+		insert into cart (cart_id,
+		user_id, user_unionId,
+		user_openId, book_id, cart_joinCartTime,
+		cart_sum, cart_unitPrice, cart_count,
+		cart_IsDeleted, cart_isCheck)
+		values (#{cart_id,jdbcType=INTEGER}, #{user_id,jdbcType=INTEGER},
+		#{user_unionId,jdbcType=VARCHAR},
+		#{user_openId,jdbcType=VARCHAR},
+		#{book_id,jdbcType=INTEGER}, #{cart_joinCartTime,jdbcType=TIMESTAMP},
+		#{cart_sum,jdbcType=DOUBLE}, #{cart_unitPrice,jdbcType=DECIMAL},
+		#{cart_count,jdbcType=INTEGER},
+		#{cart_IsDeleted,jdbcType=TINYINT},
+		#{cart_isCheck,jdbcType=TINYINT})
+	</insert>
+	<insert id="insertSelective" parameterType="pojo.Cart">
 		insert into cart
-		<trim prefix="("  suffix=")"  suffixOverrides=",">
-			<!-- cart_id 不先进行测试  -->
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="cart_id != null">
+				cart_id,
+			</if>
+			<if test="user_id != null">
+				user_id,
+			</if>
+			<if test="user_unionId != null">
+				user_unionId,
+			</if>
+			<if test="user_openId != null">
+				user_openId,
+			</if>
+			<if test="book_id != null">
+				book_id,
+			</if>
+			<if test="cart_joinCartTime != null">
+				cart_joinCartTime,
+			</if>
+			<if test="cart_sum != null">
+				cart_sum,
+			</if>
+			<if test="cart_unitPrice != null">
+				cart_unitPrice,
+			</if>
+			<if test="cart_count != null">
+				cart_count,
+			</if>
+			<if test="cart_IsDeleted != null">
+				cart_IsDeleted,
+			</if>
+			<if test="cart_isCheck != null">
+				cart_isCheck,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="cart_id != null">
+				#{cart_id,jdbcType=INTEGER},
+			</if>
+			<if test="user_id != null">
+				#{user_id,jdbcType=INTEGER},
+			</if>
+			<if test="user_unionId != null">
+				#{user_unionId,jdbcType=VARCHAR},
+			</if>
+			<if test="user_openId != null">
+				#{user_openId,jdbcType=VARCHAR},
+			</if>
+			<if test="book_id != null">
+				#{book_id,jdbcType=INTEGER},
+			</if>
+			<if test="cart_joinCartTime != null">
+				#{cart_joinCartTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cart_sum != null">
+				#{cart_sum,jdbcType=DOUBLE},
+			</if>
+			<if test="cart_unitPrice != null">
+				#{cart_unitPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="cart_count != null">
+				#{cart_count,jdbcType=INTEGER},
+			</if>
+			<if test="cart_IsDeleted != null">
+				#{cart_IsDeleted,jdbcType=TINYINT},
+			</if>
+			<if test="cart_isCheck != null">
+				#{cart_isCheck,jdbcType=TINYINT},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 保存购车信息到数据库 -->
+	<insert id="saveCart" parameterType="cart">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="cartId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into cart
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<!-- cart_id 不先进行测试 -->
 			<if test="cartId !=null">
 				cart_id,
 			</if>
@@ -179,7 +391,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 			<if test="cartCount !=null">
 				#{cartCount },
-			</if>			
+			</if>
 			<if test="cartUnitPrice !=null">
 				#{cartUnitPrice },
 			</if>
@@ -197,23 +409,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 		</trim>
 	</insert>
+
+	<select id="countByExample" parameterType="pojo.CartExample"
+		resultType="java.lang.Long">
+		select count(*) from cart
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+
 	<!--根据用户id将此用户的购物信息，查找出来 -->
 	<select id="showCart" parameterType="String" resultMap="cartResultMap">
-		<!-- select 
-		c.*,
-		b.book_ISBN,
-		b.book_name,
-		b.book_unitPrice,
-		d.distributor_press,
-		b.book_author,
-		b.book_pubTime
-		from cart c, book b, distributor d
-		where user_openId = #{openId} 
-		and c.book_id = b.book_id 
-		and b.distributor_id = d.distributor_id -->
-		
-		
-		select 
+		<!-- select c.*, b.book_ISBN, b.book_name, b.book_unitPrice, d.distributor_press, 
+			b.book_author, b.book_pubTime from cart c, book b, distributor d where user_openId 
+			= #{openId} and c.book_id = b.book_id and b.distributor_id = d.distributor_id -->
+
+		select
 		c.*,
 		b.book_ISBN,
 		b.book_name,
@@ -221,61 +432,182 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		s.store_name,
 		b.book_author,
 		b.book_pubTime,
-        b.store_id
+		b.store_id
 		from cart c, book b, store s
 		where user_openId = #{openId}
-		and c.book_id = b.book_id 
-		and b.store_id = s.store_id
+		and c.book_id
+		= b.book_id
+		and b.store_id =
+		s.store_id
 	</select>
-		
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from cart
+		where cart_id = #{cart_id,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteByExample" parameterType="pojo.CartExample">
+		delete from cart
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+
+
 	<!--将list传向持久层，删除购物车信息 -->
-	<delete id="deleteCart" >
-		delete 
-		from cart 
+	<delete id="deleteCart">
+		delete
+		from cart
 		where cart_id in
-		<foreach collection="list" item="item"  open="(" close=")" separator=",">
+		<foreach collection="list" item="item" open="(" close=")"
+			separator=",">
 			#{item}
 		</foreach>
 	</delete>
-	
+
+
+
 	<update id="updateIsDelete" parameterType="java.util.List">
-		update cart 
-			set cart_IsDeleted = 1
+		update cart
+		set cart_IsDeleted = 1
 		where cart_id in
-		<foreach collection="list" item="item" open="(" close=")" separator="," index=""> 
-            #{item}  
-        </foreach>
+		<foreach collection="list" item="item" open="(" close=")"
+			separator="," index="">
+			#{item}
+		</foreach>
 	</update>
-	
-	<update id="changeStatus" >
-		update cart 
-			set cart_IsDeleted = 1,
-				cart_isCheck = 1
+
+	<update id="changeStatus">
+		update cart
+		set cart_IsDeleted = 1,
+		cart_isCheck = 1
 		where user_openId = #{0}
-			and book_id = #{1}
+		and book_id = #{1}
 	</update>
-	
-	<!-- <update id="updCount" parameterType="java.util.List">
-	   update cart
-	   set cart_count=
-	       <foreach collection="list" item="item" separator=",">
-	             #{item.count} 
-	       </foreach>
-	       where cart_id=
-	       <foreach collection="list" item="item" separator=",">
-	              #{item.cart_id}
-	       </foreach>
-	  
-	</update> -->
-	
-	
-	    <update id="updCount" parameterType="java.util.Map">
-    		<foreach item="value" index="key" collection="map.entrySet()" separator=";" >
-            UPDATE cart SET 
-            <if test="value!=null">cart_count= ${value}  </if>
-            WHERE cart_id= #{key}
-        </foreach>
-    	</update>
+
+	<!-- <update id="updCount" parameterType="java.util.List"> update cart set 
+		cart_count= <foreach collection="list" item="item" separator=","> #{item.count} 
+		</foreach> where cart_id= <foreach collection="list" item="item" separator=","> 
+		#{item.cart_id} </foreach> </update> -->
+
+
+	<update id="updCount" parameterType="java.util.Map">
+		<foreach item="value" index="key" collection="map.entrySet()"
+			separator=";">
+			UPDATE cart SET
+			<if test="value!=null">cart_count= ${value}  </if>
+			WHERE cart_id= #{key}
+		</foreach>
+	</update>
+
+	<update id="updateByExampleSelective" parameterType="map">
+		update cart
+		<set>
+			<if test="record.cart_id != null">
+				cart_id = #{record.cart_id,jdbcType=INTEGER},
+			</if>
+			<if test="record.user_id != null">
+				user_id = #{record.user_id,jdbcType=INTEGER},
+			</if>
+			<if test="record.user_unionId != null">
+				user_unionId = #{record.user_unionId,jdbcType=VARCHAR},
+			</if>
+			<if test="record.user_openId != null">
+				user_openId = #{record.user_openId,jdbcType=VARCHAR},
+			</if>
+			<if test="record.book_id != null">
+				book_id = #{record.book_id,jdbcType=INTEGER},
+			</if>
+			<if test="record.cart_joinCartTime != null">
+				cart_joinCartTime = #{record.cart_joinCartTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.cart_sum != null">
+				cart_sum = #{record.cart_sum,jdbcType=DOUBLE},
+			</if>
+			<if test="record.cart_unitPrice != null">
+				cart_unitPrice = #{record.cart_unitPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="record.cart_count != null">
+				cart_count = #{record.cart_count,jdbcType=INTEGER},
+			</if>
+			<if test="record.cart_IsDeleted != null">
+				cart_IsDeleted = #{record.cart_IsDeleted,jdbcType=TINYINT},
+			</if>
+			<if test="record.cart_isCheck != null">
+				cart_isCheck = #{record.cart_isCheck,jdbcType=TINYINT},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update cart
+		set cart_id = #{record.cart_id,jdbcType=INTEGER},
+		user_id = #{record.user_id,jdbcType=INTEGER},
+		user_unionId = #{record.user_unionId,jdbcType=VARCHAR},
+		user_openId = #{record.user_openId,jdbcType=VARCHAR},
+		book_id = #{record.book_id,jdbcType=INTEGER},
+		cart_joinCartTime = #{record.cart_joinCartTime,jdbcType=TIMESTAMP},
+		cart_sum = #{record.cart_sum,jdbcType=DOUBLE},
+		cart_unitPrice = #{record.cart_unitPrice,jdbcType=DECIMAL},
+		cart_count = #{record.cart_count,jdbcType=INTEGER},
+		cart_IsDeleted = #{record.cart_IsDeleted,jdbcType=TINYINT},
+		cart_isCheck = #{record.cart_isCheck,jdbcType=TINYINT}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="pojo.Cart">
+		update cart
+		<set>
+			<if test="user_id != null">
+				user_id = #{user_id,jdbcType=INTEGER},
+			</if>
+			<if test="user_unionId != null">
+				user_unionId = #{user_unionId,jdbcType=VARCHAR},
+			</if>
+			<if test="user_openId != null">
+				user_openId = #{user_openId,jdbcType=VARCHAR},
+			</if>
+			<if test="book_id != null">
+				book_id = #{book_id,jdbcType=INTEGER},
+			</if>
+			<if test="cart_joinCartTime != null">
+				cart_joinCartTime = #{cart_joinCartTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cart_sum != null">
+				cart_sum = #{cart_sum,jdbcType=DOUBLE},
+			</if>
+			<if test="cart_unitPrice != null">
+				cart_unitPrice = #{cart_unitPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="cart_count != null">
+				cart_count = #{cart_count,jdbcType=INTEGER},
+			</if>
+			<if test="cart_IsDeleted != null">
+				cart_IsDeleted = #{cart_IsDeleted,jdbcType=TINYINT},
+			</if>
+			<if test="cart_isCheck != null">
+				cart_isCheck = #{cart_isCheck,jdbcType=TINYINT},
+			</if>
+		</set>
+		where cart_id = #{cart_id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="pojo.Cart">
+		update cart
+		set user_id = #{user_id,jdbcType=INTEGER},
+		user_unionId = #{user_unionId,jdbcType=VARCHAR},
+		user_openId = #{user_openId,jdbcType=VARCHAR},
+		book_id = #{book_id,jdbcType=INTEGER},
+		cart_joinCartTime = #{cart_joinCartTime,jdbcType=TIMESTAMP},
+		cart_sum = #{cart_sum,jdbcType=DOUBLE},
+		cart_unitPrice = #{cart_unitPrice,jdbcType=DECIMAL},
+		cart_count = #{cart_count,jdbcType=INTEGER},
+		cart_IsDeleted = #{cart_IsDeleted,jdbcType=TINYINT},
+		cart_isCheck = #{cart_isCheck,jdbcType=TINYINT}
+		where cart_id = #{cart_id,jdbcType=INTEGER}
+	</update>
+
 </mapper>
 
 
