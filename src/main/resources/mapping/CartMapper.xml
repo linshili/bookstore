@@ -6,24 +6,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap id="BaseResultMap" type="com.nsc.backend.entity.Cart">
 		<id column="cart_id" jdbcType="INTEGER" property="cartId" />
-		<result column="user_id" jdbcType="INTEGER" property="userId" />
 		<result column="user_unionId" jdbcType="VARCHAR" property="userUnionId" />
-		<result column="user_openId" jdbcType="VARCHAR" property="userOpenId" />
-		<result column="book_id" jdbcType="INTEGER" property="bookId" />
 		<result column="cart_joinCartTime" jdbcType="TIMESTAMP"
 			property="cartJoinCartTime" />
+			<result column="cart_modCartTime" jdbcType="TIMESTAMP"
+			property="cartModCartTime" />
 		<result column="cart_sum" jdbcType="DOUBLE" property="cartSum" />
 		<result column="cart_unitPrice" jdbcType="DECIMAL" property="cartUnitPrice" />
 		<result column="cart_count" jdbcType="INTEGER" property="cartCount" />
 		<result column="cart_IsDeleted" jdbcType="TINYINT" property="cartIsDeleted" />
 		<result column="cart_isCheck" jdbcType="TINYINT" property="cartIsCheck" />
+		<association column="book_id" property="book" javaType="com.nsc.backend.entity.Book" select="com.nsc.backend.mapper.BookMapper.findBookById">
+		</association>
 	</resultMap>
 
 	<!-- 配置查找出cart，外键user，book一对一的resultMap -->
 	<resultMap type="cart" id="cartResultMap">
 		<id column="cart_id" property="cartId" />
 		<result column="cart_joinCartTime" property="cartJoinCartTime" />
-		<result column="cart_totalUndiscount" property="cartTotalUndiscount" />
+		<result column="cart_modCartTime" property="cartModCartTime" />
+		<!-- <result column="cart_totalUndiscount" property="cartTotalUndiscount" /> -->
 		<result column="cart_unitPrice" property="cartUnitPrice" />
 		<result column="cart_count" property="cartCount" />
 		<result column="cart_isCheck" property="cartIsCheck" />
@@ -140,8 +142,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
 	</sql>
 	<sql id="Base_Column_List">
-		cart_id, user_id, user_unionId, user_openId, book_id,
-		cart_joinCartTime,
+		cart_id, user_unionId, book_id,
+		cart_joinCartTime,cart_modCartTime,
 		cart_sum,
 		cart_unitPrice, cart_count, cart_IsDeleted,
 		cart_isCheck
@@ -175,14 +177,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getCartByBookId" resultMap="cartResultMap">
 		select
 		cart.* ,
-		user.user_openId,
+		user.user_unionId,
 		user.user_id,
 		book.book_id,
 		book.book_name
 		from cart
 		,user,book
 		where cart.book_id = #{0}
-		and cart.user_openId = #{1}
+		and cart.user_unionId = #{1}
 
 	</select>
 
@@ -230,10 +232,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateBookCount" parameterType="cart">
 		update cart
 		<trim prefix="set" suffixOverrides=",">
-			<if test="cartJoinTime!=null">cart_joinCartTime = #{cartJoinTime} ,</if>
+			<if test="cartModCartTime!=null">cart_modCartTime = #{cartModCartTime} ,</if>
 			<if test="cartCount!=null"> cart_count= #{cartCount} ,</if>
-			<if test="cartUnitPrice">cart_unitPrice = #{cartUnitPrice},</if>
-			<if test="cartTotalUndiscount">cart_totalUndiscount = #{cartTotalUndiscount} ,</if>
+			<if test="cartUnitPrice!=null">cart_unitPrice = #{cartUnitPrice},</if>
 			<if test="book!=null">book_id = #{book.bookId} ,</if>
 			<if test="user!=null">user_openId = #{user.userOpenId} ,</if>
 		</trim>
@@ -255,27 +256,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateCart" parameterType="cart">
 		update cart
 		<trim prefix="set" suffixOverrides=",">
-			<if test="cartJoinTime!=null">cart_joinCartTime = #{cartJoinTime} ,</if>
+			<if test="cartModCartTime!=null">cart_modCartTime = #{cartModCartTime} ,</if>
 			<if test="cartCount!=null"> cart_count= #{cartCount} ,</if>
 			<if test="cartUnitPrice">cart_unitPrice = #{cartUnitPrice},</if>
-			<if test="cartTotalUndiscount">cart_totalUndiscount = #{cartTotalUndiscount} ,</if>
-			<if test="book!=null">book_id = #{book.bookId} ,</if>
-			<if test="user!=null">user_openId = #{user.userOpenId} ,</if>
+			<!-- <if test="cartTotalUndiscount">cart_totalUndiscount = #{cartTotalUndiscount} ,</if> -->
+			<if test="user!=null">user_openId = #{user.unionId} ,</if>
 		</trim>
 		where book_id = #{book.bookId}
-		and user_openId = #{user.userOpenId}
+		and user_unionId = #{user.unionId}
 	</update>
 
 	<insert id="insert" parameterType="com.nsc.backend.entity.Cart">
 		insert into cart (cart_id,
-		user_id, user_unionId,
-		user_openId, book_id, cart_joinCartTime,
+		user_unionId,
+	    book_id, cart_joinCartTime,cart_modCartTime,
 		cart_sum, cart_unitPrice, cart_count,
 		cart_IsDeleted, cart_isCheck)
-		values (#{cartId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+		values (#{cartId,jdbcType=INTEGER},
 		#{userUnionId,jdbcType=VARCHAR},
-		#{userOpenId,jdbcType=VARCHAR},
-		#{bookId,jdbcType=INTEGER}, #{cartJoinCartTime,jdbcType=TIMESTAMP},
+		#{bookId,jdbcType=INTEGER}, #{cartJoinCartTime,jdbcType=TIMESTAMP},#{cartModCartTime,jdbcType=TIMESTAMP},
 		#{cartSum,jdbcType=DOUBLE}, #{cartUnitPrice,jdbcType=DECIMAL},
 		#{cartCount,jdbcType=INTEGER},
 		#{cartIsDeleted,jdbcType=TINYINT},
@@ -287,20 +286,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="cartId != null">
 				cart_id,
 			</if>
-			<if test="userId != null">
-				user_id,
-			</if>
 			<if test="userUnionId != null">
 				user_unionId,
-			</if>
-			<if test="userOpenId != null">
-				user_openId,
 			</if>
 			<if test="bookId != null">
 				book_id,
 			</if>
 			<if test="cartJoinCartTime != null">
 				cart_joinCartTime,
+			</if>
+			<if test="cartModCartTime != null">
+				cart_modCartTime,
 			</if>
 			<if test="cartSum != null">
 				cart_sum,
@@ -314,43 +310,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="cartIsDeleted != null">
 				cart_IsDeleted,
 			</if>
-			<if test="carIsCheck != null">
+			<if test="cartIsCheck != null">
 				cart_isCheck,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="cartId != null">
-				#{cart_id,jdbcType=INTEGER},
-			</if>
-			<if test="userId != null">
-				#{user_id,jdbcType=INTEGER},
+				#{cartId,jdbcType=INTEGER},
 			</if>
 			<if test="userUnionId != null">
-				#{user_unionId,jdbcType=VARCHAR},
-			</if>
-			<if test="userOpenId != null">
-				#{user_openId,jdbcType=VARCHAR},
+				#{userUnionId,jdbcType=VARCHAR},
 			</if>
 			<if test="bookId != null">
-				#{book_id,jdbcType=INTEGER},
+				#{bookId,jdbcType=INTEGER},
 			</if>
 			<if test="cartJoinCartTime != null">
-				#{cart_joinCartTime,jdbcType=TIMESTAMP},
+				#{cartJoinCartTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cartModCartTime != null">
+				#{cartModCartTime,jdbcType=TIMESTAMP},
 			</if>
 			<if test="cartSum != null">
-				#{cart_sum,jdbcType=DOUBLE},
+				#{cartSum,jdbcType=DOUBLE},
 			</if>
 			<if test="cartUnitPrice != null">
-				#{cart_unitPrice,jdbcType=DECIMAL},
+				#{cartUnitPrice,jdbcType=DECIMAL},
 			</if>
 			<if test="cartCount != null">
-				#{cart_count,jdbcType=INTEGER},
+				#{cartCount,jdbcType=INTEGER},
 			</if>
 			<if test="cartIsDeleted != null">
-				#{cart_IsDeleted,jdbcType=TINYINT},
+				#{cartIsDeleted,jdbcType=TINYINT},
 			</if>
 			<if test="cartIsCheck != null">
-				#{cart_isCheck,jdbcType=TINYINT},
+				#{cartIsCheck,jdbcType=TINYINT},
 			</if>
 		</trim>
 	</insert>
@@ -372,17 +365,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="cartUnitPrice !=null">
 				cart_unitPrice,
 			</if>
-			<if test="cartTotalUndiscount !=null">
+			<!-- <if test="cartTotalUndiscount !=null">
 				cart_totalUndiscount,
-			</if>
-			<if test="cartJoinTime !=null">
+			</if> -->
+			<if test="cartJoinCartTime !=null">
 				cart_joinCartTime,
+			</if>
+			<if test="cartModCartTime !=null">
+				cart_modCartTime,
 			</if>
 			<if test="book!=null">
 				book_id,
 			</if>
 			<if test="user!=null">
-				user_openId,
+				user_unionId,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -395,9 +391,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="cartUnitPrice !=null">
 				#{cartUnitPrice },
 			</if>
-			<if test="cartTotalUndiscount !=null">
+			<!-- <if test="cartTotalUndiscount !=null">
 				#{cartTotalUndiscount },
-			</if>
+			</if> -->
 			<if test="cartJoinTime !=null">
 				#{ cartJoinTime},
 			</if>
@@ -405,7 +401,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				#{book.bookId },
 			</if>
 			<if test="user!=null">
-				#{user.userOpenId },
+				#{user.unionId },
 			</if>
 		</trim>
 	</insert>
@@ -434,7 +430,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		b.book_pubTime,
 		b.store_id
 		from cart c, book b, store s
-		where user_openId = #{openId}
+		where user_unionId = #{unionId}
 		and c.book_id
 		= b.book_id
 		and b.store_id =
@@ -502,38 +498,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateByExampleSelective" parameterType="map">
 		update cart
 		<set>
-			<if test="record.cart_id != null">
+			<if test="record.cartId != null">
 				cart_id = #{record.cart_id,jdbcType=INTEGER},
 			</if>
-			<if test="record.user_id != null">
-				user_id = #{record.user_id,jdbcType=INTEGER},
+			<if test="record.userUnionId != null">
+				user_unionId = #{record.userUnionId,jdbcType=VARCHAR},
 			</if>
-			<if test="record.user_unionId != null">
-				user_unionId = #{record.user_unionId,jdbcType=VARCHAR},
+			<if test="record.bookId != null">
+				book_id = #{record.bookId,jdbcType=INTEGER},
 			</if>
-			<if test="record.user_openId != null">
-				user_openId = #{record.user_openId,jdbcType=VARCHAR},
+			<if test="record.cartJoinCartTime != null">
+				cart_joinCartTime = #{record.cartJoinCartTime,jdbcType=TIMESTAMP},
 			</if>
-			<if test="record.book_id != null">
-				book_id = #{record.book_id,jdbcType=INTEGER},
+			<if test="record.cartModCartTime != null">
+				cart_modCartTime = #{record.cartModCartTime,jdbcType=TIMESTAMP},
 			</if>
-			<if test="record.cart_joinCartTime != null">
-				cart_joinCartTime = #{record.cart_joinCartTime,jdbcType=TIMESTAMP},
+			<if test="record.cartSum != null">
+				cart_sum = #{record.cartSum,jdbcType=DOUBLE},
 			</if>
-			<if test="record.cart_sum != null">
-				cart_sum = #{record.cart_sum,jdbcType=DOUBLE},
+			<if test="record.cartUnitPrice != null">
+				cart_unitPrice = #{record.cartUnitPrice,jdbcType=DECIMAL},
 			</if>
-			<if test="record.cart_unitPrice != null">
-				cart_unitPrice = #{record.cart_unitPrice,jdbcType=DECIMAL},
+			<if test="record.cartCount != null">
+				cart_count = #{record.cartCount,jdbcType=INTEGER},
 			</if>
-			<if test="record.cart_count != null">
-				cart_count = #{record.cart_count,jdbcType=INTEGER},
+			<if test="record.cartIsDeleted != null">
+				cart_IsDeleted = #{record.cartIsDeleted,jdbcType=TINYINT},
 			</if>
-			<if test="record.cart_IsDeleted != null">
-				cart_IsDeleted = #{record.cart_IsDeleted,jdbcType=TINYINT},
-			</if>
-			<if test="record.cart_isCheck != null">
-				cart_isCheck = #{record.cart_isCheck,jdbcType=TINYINT},
+			<if test="record.cartIsCheck != null">
+				cart_isCheck = #{record.cartIsCheck,jdbcType=TINYINT},
 			</if>
 		</set>
 		<if test="_parameter != null">
@@ -542,17 +535,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	<update id="updateByExample" parameterType="map">
 		update cart
-		set cart_id = #{record.cart_id,jdbcType=INTEGER},
-		user_id = #{record.user_id,jdbcType=INTEGER},
-		user_unionId = #{record.user_unionId,jdbcType=VARCHAR},
-		user_openId = #{record.user_openId,jdbcType=VARCHAR},
-		book_id = #{record.book_id,jdbcType=INTEGER},
-		cart_joinCartTime = #{record.cart_joinCartTime,jdbcType=TIMESTAMP},
-		cart_sum = #{record.cart_sum,jdbcType=DOUBLE},
-		cart_unitPrice = #{record.cart_unitPrice,jdbcType=DECIMAL},
-		cart_count = #{record.cart_count,jdbcType=INTEGER},
-		cart_IsDeleted = #{record.cart_IsDeleted,jdbcType=TINYINT},
-		cart_isCheck = #{record.cart_isCheck,jdbcType=TINYINT}
+		set cart_id = #{record.cartId,jdbcType=INTEGER},
+		user_unionId = #{record.userUnionId,jdbcType=VARCHAR},
+		book_id = #{record.bookId,jdbcType=INTEGER},
+		cart_modCartTime = #{record.cartModCartTime,jdbcType=TIMESTAMP},
+		cart_sum = #{record.cartSum,jdbcType=DOUBLE},
+		cart_unitPrice = #{record.cartUnitPrice,jdbcType=DECIMAL},
+		cart_count = #{record.cartCount,jdbcType=INTEGER},
+		cart_IsDeleted = #{record.cartIsDeleted,jdbcType=TINYINT},
+		cart_isCheck = #{record.cartIsCheck,jdbcType=TINYINT}
 		<if test="_parameter != null">
 			<include refid="Update_By_Example_Where_Clause" />
 		</if>
@@ -560,20 +551,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateByPrimaryKeySelective" parameterType="com.nsc.backend.entity.Cart">
 		update cart
 		<set>
-			<if test="userId != null">
-				user_id = #{userId,jdbcType=INTEGER},
-			</if>
 			<if test="userUnionId != null">
 				user_unionId = #{userUnionId,jdbcType=VARCHAR},
-			</if>
-			<if test="userOpenId != null">
-				user_openId = #{userOpenId,jdbcType=VARCHAR},
 			</if>
 			<if test="bookId != null">
 				book_id = #{bookId,jdbcType=INTEGER},
 			</if>
 			<if test="cartJoinCartTime != null">
 				cart_joinCartTime = #{cartJoinCartTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cartModCartTime != null">
+				cart_modCartTime = #{cartModCartTime,jdbcType=TIMESTAMP},
 			</if>
 			<if test="cartSum != null">
 				cart_sum = #{cartSum,jdbcType=DOUBLE},
@@ -595,11 +583,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.nsc.backend.entity.Cart">
 		update cart
-		set user_id = #{userId,jdbcType=INTEGER},
 		user_unionId = #{userUnionId,jdbcType=VARCHAR},
-		user_openId = #{userOpenId,jdbcType=VARCHAR},
 		book_id = #{bookId,jdbcType=INTEGER},
-		cart_joinCartTime = #{cartJoinCartTime,jdbcType=TIMESTAMP},
+		<!-- cart_joinCartTime = #{cartJoinCartTime,jdbcType=TIMESTAMP}, -->
+		cart_modCartTime = #{cartModCartTime,jdbcType=TIMESTAMP},
 		cart_sum = #{cartSum,jdbcType=DOUBLE},
 		cart_unitPrice = #{cartUnitPrice,jdbcType=DECIMAL},
 		cart_count = #{cartCount,jdbcType=INTEGER},

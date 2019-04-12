@@ -1,6 +1,5 @@
 package com.nsc.web.contorller;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,7 +26,10 @@ import com.nsc.backend.entity.User;
 import com.nsc.backend.service.IBookService;
 import com.nsc.backend.service.ICartService;
 import com.nsc.backend.service.IUserService;
+import com.nsc.web.util.DateTimeGenerator;
+import com.nsc.web.util.LogUtil;
 import com.nsc.web.util.backstate.BackState;
+import com.nsc.web.util.backstate.OpState;
 
 /**
  * 商品加入购物车controller
@@ -37,6 +39,8 @@ import com.nsc.web.util.backstate.BackState;
 @Controller
 @RequestMapping("/cart")
 public class CartController {
+	
+	private final String classname = "CartController";
 	
 	@Autowired
 	private ICartService cartServiceImpl;
@@ -50,78 +54,140 @@ public class CartController {
 		System.out.println("这是测试方法的");
 	}
 	
+	@RequestMapping("addToCartList")//N
+	@ResponseBody
+	public Boolean addToCartList( @RequestBody String info) {
+		
+		JSONObject jsonObj = JSONObject.parseObject(info);
+		String unionId = jsonObj.getString("unionId");
+		Integer bookId = (Integer)jsonObj.getInteger("bookId");
+		Double unitPrice = (Double)jsonObj.getDouble("unitPrice");
+		Integer count = (Integer)jsonObj.getInteger("count");
+		try {
+			//1.-判断是否已经存在记录
+			//2.--是( booId + isDeleted == false ):更新记录
+			//3.--否: 直接作为新纪录保存
+			
+			Cart cart = cartServiceImpl.getCartByBIdAndUId(bookId,unionId);
+			Cart newCartItem = null;
+			Date dateNow = DateTimeGenerator.getDateTime();
+			if(cart==null){
+				newCartItem = new Cart();
+				newCartItem.setBookId(bookId);
+				newCartItem.setUserUnionId(unionId);
+				newCartItem.setCartCount(count);
+				newCartItem.setCartUnitPrice(unitPrice);
+				newCartItem.setCartJoinCartTime(dateNow);
+				newCartItem.setCartModCartTime(dateNow);
+				newCartItem.setCartSum(unitPrice*count);
+				//保存newCartItem到数据库(insert)
+				cartServiceImpl.saveCartItem(newCartItem);
+				
+			}else {
+				newCartItem = new Cart();
+				//重要============
+				cart.setCartCount(cart.getCartCount()+count);
+				cart.setCartSum(cart.getCartCount() *cart.getCartUnitPrice().doubleValue());
+				cart.setCartModCartTime(dateNow);
+				//重要============
+				//保存更新后的cart到数据库(update)
+				cartServiceImpl.updateCartItem(cart);
+				
+			}
+			return OpState.OK;
+			
+		}catch(Exception e) {
+			LogUtil.out(classname, "addToCartList", "添加用户的购物车数据异常"+e.toString());
+			return OpState.ERROR;
+		}
+	}
+	
 	/**
 	 * 添加购物车信息，如果已经包含则更新购物车的信息
-	 * @param openId
+	 * @param unionId
 	 * @param bookId
 	 * @param unitPrice
 	 * @param count
 	 */
 	@RequestMapping("addToCart")//N
 	@ResponseBody
-	public BackState addToCart(String openId,Integer bookId,Double unitPrice,Integer count){
-		/**
-		 * 将用户的购物车信息保存到数据库
-		 */
-		//判断购物车是否有此商品
-		Cart cart = cartServiceImpl.getCartByBookId(bookId,openId);
-		Cart addCart = new Cart();
-		if(cart==null){
-			Book book = new Book();
-			//User user = new User();
-			//查找用户和book,为cart添加外键
-			User user = userServiceImpl.findUserByopenId(openId);
-			//Book book = bookServiceImpl.findBookById(bookId);
-			//user.setUserOpenId(openId);
-			book.setBookId(bookId);
-			//设置当前时间，保存购物车
-			Date parse = null;
-			try {
-				Date date = new Date();
-				SimpleDateFormat sdf = new SimpleDateFormat();
-				String formate = sdf.format(date);
-				parse = sdf.parse(formate);
-			} catch (ParseException e) {
-				System.out.println("当前日期初始化错误");
-				e.printStackTrace();
-			}
-			addCart.setCartJoinCartTime(parse);
-			addCart.setBook(book);
-			addCart.setUser(user);
-			addCart.setCartUnitPrice(unitPrice);
-			addCart.setCartCount(count);
-			Double sum = unitPrice.doubleValue()*count;
-			addCart.setCartSum(sum);
-			//保存订单信息到数据库
-			cartServiceImpl.saveCart(addCart);
-			System.out.println(addCart.getCartId()+"=========================");
+	public Boolean addToCart(String unionId,Integer bookId,Double unitPrice,Integer count,String temp){
+	
+		try {
+			//将用户的购物车信息保存到数据库
+			//1.判断购物车是否有此商品
+			Cart cart = cartServiceImpl.getCartByBIdAndUId(bookId,unionId);
 			
-			//为小程序返回，操作状态
-			BackState bs = new BackState();
-			bs.setStateName("HTTP State 200");//HTTP Status 404
-			return bs;
-		}else{
-			Date parse = null;
-			try {
+			Cart addCart = new Cart();
+			if(cart==null){
+				Book book = new Book();
+				//User user = new User();
+				//查找用户和book,为cart添加外键
+				User user = userServiceImpl.findUserByUnionId(unionId);
+				//Book book = bookServiceImpl.findBookById(bookId);
+				//user.setUserOpenId(openId);
+				book.setBookId(bookId);
+				//设置当前时间，保存购物车
+				Date parse = null;
+//				try {
+//					Date date = new Date();
+//					SimpleDateFormat sdf = new SimpleDateFormat();
+//					String formate = sdf.format(date);
+//					parse = sdf.parse(formate);
+//				} catch (ParseException e) {
+//					System.out.println("当前日期初始化错误");
+//					e.printStackTrace();
+//				}
 				Date date = new Date();
 				SimpleDateFormat sdf = new SimpleDateFormat();
 				String formate = sdf.format(date);
 				parse = sdf.parse(formate);
-			} catch (ParseException e) {
-				System.out.println("当前日期初始化错误");
-				e.printStackTrace();
-			}
-			cart.setCartJoinCartTime(parse);
-			cart.setCartCount(cart.getCartCount()+count);
-			cart.setCartSum(cart.getCartCount() *cart.getCartUnitPrice().doubleValue());
-			//将更新的购物车信息，在数据库进行更新
-		    cartServiceImpl.updateCart(cart);
-		    //为小程序返回，操作状态
-			BackState bs = new BackState();
-			bs.setStateId(Math.random());
-			bs.setStateName("HTTP State 200");
-		    return bs;
+				addCart.setCartJoinCartTime(parse);
+				addCart.setBook(book);
+				addCart.setUser(user);
+				addCart.setCartUnitPrice(unitPrice);
+				addCart.setCartCount(count);
+				Double sum = unitPrice.doubleValue()*count;
+				addCart.setCartSum(sum);
+				//保存订单信息到数据库
+				cartServiceImpl.saveCart(addCart);
+				System.out.println(addCart.getCartId()+"=========================");
+				
+				//为小程序返回，操作状态
+				BackState bs = new BackState();
+				bs.setStateName("HTTP State 200");//HTTP Status 404
+			}else{
+				Date parse = null;
+				try {
+					Date date = new Date();
+					SimpleDateFormat sdf = new SimpleDateFormat();
+					String formate = sdf.format(date);
+					parse = sdf.parse(formate);
+				} catch (ParseException e) {
+					System.out.println("当前日期初始化错误");
+					e.printStackTrace();
+				}
+
+				cart.setCartJoinCartTime(parse);
+				
+				//重要============
+				cart.setCartCount(cart.getCartCount()+count);
+				cart.setCartSum(cart.getCartCount() *cart.getCartUnitPrice().doubleValue());
+				//重要============
+				
+				
+				//将更新的购物车信息，在数据库进行更新
+			    cartServiceImpl.updateCart(cart);
+			    //为小程序返回，操作状态
+				BackState bs = new BackState();
+				bs.setStateId(Math.random());
+				bs.setStateName("HTTP State 200");
+				}
+		}catch(Exception e) {
+			LogUtil.out(classname, "addToCart", "异常--"+e.toString());
+			return OpState.ERROR;
 		}
+		return false;
 		
 	}
 	
@@ -223,12 +289,6 @@ public class CartController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
 	/**
 	 *	根据cartId和count修改，购物车中书籍中数量 
 	 * @param cartId
@@ -250,24 +310,7 @@ public class CartController {
 	}
 	
 	
-	/**
-	 * 根据用户的openId，将此用户加入到购物车的信息返回到前台
-	 * @param openId
-	 * @return
-	 */
-	@RequestMapping(value= "showCart",method= RequestMethod.POST)
-	public @ResponseBody List<Cart> showCart(@RequestBody String openId){
-		//根据用户id将此用户的购物信息，查找出来
-		System.out.println(openId);
-		JSONObject json = JSONObject.parseObject(openId);
-		openId = json.getString("openId");
-		List<Cart> carts = cartServiceImpl.showCart(openId);
-		for(Cart c :carts){
-			System.out.println(c.toString());
-		}
-		
-		return carts ;
-	}
+	
 	
 	@RequestMapping("isCheck")
 	@ResponseBody
@@ -311,8 +354,6 @@ public class CartController {
 		
 	}
 	
-	
-	
 	@RequestMapping("/addOrDele")
 	@ResponseBody
 	public BackState addOrDele(@RequestBody String cartparam){
@@ -337,5 +378,20 @@ public class CartController {
 		return bs;
 	}
 	
+	/**
+	 * 根据用户的unionId，将此用户加入到购物车的信息返回到前台
+	 * @param unionId
+	 * @return
+	 */
+	@RequestMapping(value= "showCart",method= RequestMethod.POST)
+	@ResponseBody
+	public List<Cart> showCart(@RequestBody String unionId){
+		
+		JSONObject json = JSONObject.parseObject(unionId);
+		List<Cart> carts = cartServiceImpl.showCart(json.getString("unionId"));
+		LogUtil.out(classname, "showCart", "查找用户购物车数据成功 共计--"+ carts.size() +"条");
+		
+		return carts ;
+	}
 	
 }
