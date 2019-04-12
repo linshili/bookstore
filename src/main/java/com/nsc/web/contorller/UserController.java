@@ -82,15 +82,15 @@ public class UserController {
 				// String
 				// one="{\"session_key\":\"5r9TVfOwFjdXhEj5CeDREA==\",\"expires_in\":7200,\"openid\":\"o_1QS0WoXqiTeHge-MzBJ1CnPOL0\"}";
 				if (isOk == true) {
-					LogUtil.out(classname, "login", "保存到数据库成功");
+					LogUtil.out(classname, "login", "保存用户到数据库成功");
 				} else {
-					LogUtil.out(classname, "login", "保存到数据库失败");
+					LogUtil.out(classname, "login", "保存用户到数据库失败");
 				}
 			}
 			out.println(jsonUser);
 
 		} catch (Exception e) {
-			LogUtil.out(classname, "login", e.getMessage());
+			LogUtil.out(classname, "login", e.toString());
 			out.println("Error");
 		}
 

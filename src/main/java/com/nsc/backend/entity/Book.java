@@ -289,6 +289,24 @@ public class Book {
 		public String getStoreName() {
 			return storeName;
 		}
+		@Override
+		public String toString() {
+			return "{ bookId=" + bookId + ", bookISBN=" + bookISBN + ", bookName=" + bookName + ", bookUnitPrice="
+					+ bookUnitPrice + ", bookPreface=" + bookPreface + ", bookConBrief=" + bookConBrief
+					+ ", bookAuthorBrief=" + bookAuthorBrief + ", bookCatalog=" + bookCatalog + ", bookAuthor="
+					+ bookAuthor + ", bookPubTime=" + bookPubTime + ", bookPriTime=" + bookPriTime + ", bookEdtion="
+					+ bookEdtion + ", bookImpression=" + bookImpression + ", bookSize=" + bookSize + ", bookPaper="
+					+ bookPaper + ", bookPacking=" + bookPacking + ", bookSuit=" + bookSuit + ", bookImgUrl="
+					+ bookImgUrl + ", bookStock=" + bookStock + ", bookValidityPeriod=" + bookValidityPeriod
+					+ ", bookOriginalPrice=" + bookOriginalPrice + ", bookIsDetele=" + bookIsDetele + ", bookKeyWord1="
+					+ bookKeyWord1 + ", bookKeyWord2=" + bookKeyWord2 + ", bookSeriesAb=" + bookSeriesAb
+					+ ", bookPublicSort=" + bookPublicSort + ", bookScores=" + bookScores + ", bookCode=" + bookCode
+					+ ", bookPicture=" + bookPicture + ", bookTitles=" + bookTitles + ", bookMeasurementUnit="
+					+ bookMeasurementUnit + ", publish_house=" + publish_house + ", bookDiscount=" + bookDiscount
+					+ ", bookNote=" + bookNote + ", orderFreight=" + orderFreight + ", category=" + category
+					+ ", secondCate=" + secondCate + ", thirdCate=" + thirdCate + ", storeId=" + storeId
+					+ ", storeName=" + storeName + " }";
+		}
 		
 		
 		

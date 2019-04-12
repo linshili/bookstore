@@ -1,5 +1,6 @@
 package com.nsc.backend.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nsc.backend.entity.Cart;
+import com.nsc.backend.entity.CartExample;
+import com.nsc.backend.entity.CartExample.Criteria;
 import com.nsc.backend.mapper.CartMapper;
 import com.nsc.backend.service.ICartService;
+import com.nsc.web.util.LogUtil;
 import com.nsc.web.util.backstate.BackState;
 
 /**
@@ -20,6 +24,7 @@ import com.nsc.web.util.backstate.BackState;
 @Transactional
 public class CartServiceImpl implements ICartService{
 	
+	private static final String classname= "ICartService";
 	private static final int Integer = 0;
 	@Autowired
 	private CartMapper cartMapper;
@@ -36,11 +41,18 @@ public class CartServiceImpl implements ICartService{
 	public void saveCart(Cart cart) {
 		cartMapper.saveCart(cart);
 	}
-	//根据用户id将此用户的购物信息，查找出来
-	public List<Cart> showCart(String openId) {
-		List<Cart> carts = cartMapper.showCart(openId);
+
+	
+	public List<Cart> showCart(String unionId) {
+		//List<Cart> carts = cartMapper.showCart(openId);
+		CartExample cartExample = new CartExample();
+		Criteria criteria = cartExample.createCriteria();
+		criteria.andUser_unionIdEqualTo(unionId);
+		
+		List<Cart> carts = cartMapper.selectByExample(cartExample);
 		return carts;
 	}
+	
 	//将list传向持久层，删除购物车信息
 	public void deleteCart(List<Integer> list) {
 		cartMapper.deleteCart(list);
@@ -106,6 +118,50 @@ public class CartServiceImpl implements ICartService{
 	@Override
 	public Cart getCartByBIdAndUId(java.lang.Integer bookId, String unionId) {
 		
+		CartExample cartExample = new CartExample();
+		Criteria criteria = cartExample.createCriteria();
+		criteria.andBook_idEqualTo(bookId);
+		criteria.andUser_unionIdEqualTo(unionId);
+		criteria.andCart_IsDeletedEqualTo( (byte)0 );
+		
+		List<Cart> carts = cartMapper.selectByExample(cartExample);
+		if(carts.size() == 1) {
+			return carts.get(0);
+		}
 		return null;
+	}
+	
+	@Override
+	public Boolean saveCartItem(Cart... carts) {
+		
+		if(carts == null) {
+			return true;
+		}
+		try {
+			for(int i = 0, len = carts.length; i < len; i++) {
+				cartMapper.insert(carts[i]);
+			}
+			return true;
+		}catch(Exception e) {
+			LogUtil.out(classname, "saveCartItem", "保存购物车数据失败--"+e.toString());
+			return false;
+		}
+		
+	}
+	@Override
+	public Boolean updateCartItem(Cart... carts) {
+		
+		if(carts == null) {
+			return true;
+		}
+		try {
+			for(int i = 0, len = carts.length; i < len; i++) {
+				cartMapper.updateByPrimaryKeySelective(carts[i]);
+			}
+			return true;
+		}catch(Exception e) {
+			LogUtil.out(classname, "saveCartItem", "更新购物车数据失败--"+e.toString());
+			return false;
+		}
 	}
 }

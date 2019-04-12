@@ -188,11 +188,11 @@ public class AddressController {
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("application/json;charset=utf-8");
 		JSONObject json = JSONObject.parseObject(unionId);
-		
 		try {
 			//String id = (String) json.get("openId");
 			//User user = userServiceImpl.findUserByopenId(id);
-			String id = (String) json.get("uinonId");
+			String id = (String) json.get("unionId");
+			System.out.println("uid--"+id);
 			User user = userServiceImpl.findUserByUnionId(id);
 			Address address = addressServiceImpl.findDefaultAdd(user.getUserId());
 			Map<String,Address> map = new HashMap<>();
