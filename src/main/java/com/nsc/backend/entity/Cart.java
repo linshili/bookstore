@@ -11,19 +11,17 @@ import java.util.Date;
 public class Cart {
     private Integer cartId;
 
-    private Integer userId;
-    
     private User user;
 
     private String userUnionId;
-
-    private String userOpenId;
 
     private Integer bookId;
     
     private Book book;
 
 	private Date cartJoinCartTime;
+	
+	private Date cartModCartTime;
 
 	private Double cartSum;
 
@@ -43,15 +41,6 @@ public class Cart {
 		this.cartId = cartId;
 	}
 
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-
-	
 	public User getUser() {
 		return user;
 	}
@@ -68,13 +57,6 @@ public class Cart {
 		this.userUnionId = userUnionId;
 	}
 
-	public String getUserOpenId() {
-		return userOpenId;
-	}
-
-	public void setUserOpenId(String userOpenId) {
-		this.userOpenId = userOpenId;
-	}
 
     public Book getBook() {
 		return book;
@@ -144,14 +126,24 @@ public class Cart {
 	public void setCartIsCheck(Byte cartIsCheck) {
 		this.cartIsCheck = cartIsCheck;
 	}
+	
+
+	public Date getCartModCartTime() {
+		return cartModCartTime;
+	}
+
+	public void setCartModCartTime(Date cartModCartTime) {
+		this.cartModCartTime = cartModCartTime;
+	}
 
 	@Override
 	public String toString() {
-		return "Cart [cartId=" + cartId + ", userId=" + userId + ", userUnionId=" + userUnionId + ", userOpenId="
-				+ userOpenId + ", bookId=" + bookId + ", cartjoinCartTime=" + cartJoinCartTime
-				+ ", cartSum=" + cartSum + ", cartUnitPrice=" + cartUnitPrice + ", cartCount="
-				+ cartCount + ", cartIsDeleted=" + cartIsDeleted + ", cartIsCheck=" + cartIsCheck + "]";
+		return "Cart [cartId=" + cartId + ", user=" + user + ", userUnionId=" + userUnionId
+				+ ", book=" + book.toString() + ", cartJoinCartTime=" + cartJoinCartTime + ", cartModCartTime=" + cartModCartTime
+				+ ", cartSum=" + cartSum + ", cartUnitPrice=" + cartUnitPrice + ", cartCount=" + cartCount
+				+ ", cartIsDeleted=" + cartIsDeleted + ", cartIsCheck=" + cartIsCheck + "]";
 	}
+
 
     
 }
