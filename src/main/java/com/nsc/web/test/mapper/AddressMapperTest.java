@@ -11,9 +11,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.nsc.backend.entity.Address;
 import com.nsc.backend.mapper.AddressMapper;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:application-context.xml", "classpath:config/*.xml" })
-@WebAppConfiguration
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = { "classpath:application-context.xml", "classpath:config/*.xml" })
+//@WebAppConfiguration
 public class AddressMapperTest {
 
 	@Resource
