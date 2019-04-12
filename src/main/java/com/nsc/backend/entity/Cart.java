@@ -2,89 +2,152 @@ package com.nsc.backend.entity;
 
 import java.util.Date;
 
-//购物车实体类
+/**
+ * 
+ * @Desc 购物车实体类
+ * @author sjg
+ * @Date 2019年4月12日
+ */
 public class Cart {
-	private Integer cartId;
-	private Date	cartJoinTime;
-	private Double cartTotalUndiscount;
-	private Double cartUnitPrice;
-	private Integer cartCount;
-	private boolean cartIsCheck;
-	
-	//订单关联的用户,每次加入购物车,只能加入一种商品,加入时先看数据库中是否有次商品，有数量加，没有则创建此商品
-	private User user;
-	private Book book;
-	private Distributor distributor;
-	private Store store;
-	
-	
-	
-	public Store getStore() {
-		return store;
-	}
-	public void setStore(Store store) {
-		this.store = store;
-	}
-	public boolean isCartIsCheck() {
-		return cartIsCheck;
-	}
-	public void setCartIsCheck(boolean cartIsCheck) {
-		this.cartIsCheck = cartIsCheck;
-	}
-	public Distributor getDistributor() {
-		return distributor;
-	}
-	public void setDistributor(Distributor distributor) {
-		this.distributor = distributor;
-	}
-	public Double getCartUnitPrice() {
-		return cartUnitPrice;
-	}
-	public void setCartUnitPrice(Double cartUnitPrice) {
-		this.cartUnitPrice = cartUnitPrice;
-	}
-	public Integer getCartCount() {
-		return cartCount;
-	}
-	public void setCartCount(Integer cartCount) {
-		this.cartCount = cartCount;
-	}
-	public Book getBook() {
-		return book;
-	}
-	public void setBook(Book book) {
-		this.book = book;
-	}
+    private Integer cartId;
+
+    private Integer userId;
+    
+    private User user;
+
+    private String userUnionId;
+
+    private String userOpenId;
+
+    private Integer bookId;
+    
+    private Book book;
+
+	private Date cartjoinCartTime;
+
+	 private Double cartSum;
+
+    private Double cartUnitPrice;
+
+    private Integer cartCount;
+
+    private Byte cartIsDeleted;
+
+    private Byte cartIsCheck;
+
 	public Integer getCartId() {
 		return cartId;
 	}
+
 	public void setCartId(Integer cartId) {
 		this.cartId = cartId;
 	}
-	public Date getCartJoinTime() {
-		return cartJoinTime;
+
+	public Integer getUserId() {
+		return userId;
 	}
-	public void setCartJoinTime(Date cartJoinTime) {
-		this.cartJoinTime = cartJoinTime;
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
-	public Double getCartTotalUndiscount() {
-		return cartTotalUndiscount;
-	}
-	public void setCartTotalUndiscount(Double cartTotalUndiscount) {
-		this.cartTotalUndiscount = cartTotalUndiscount;
-	}
+
+	
 	public User getUser() {
 		return user;
 	}
+
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+	public String getUserUnionId() {
+		return userUnionId;
+	}
+
+	public void setUserUnionId(String userUnionId) {
+		this.userUnionId = userUnionId;
+	}
+
+	public String getUserOpenId() {
+		return userOpenId;
+	}
+
+	public void setUserOpenId(String userOpenId) {
+		this.userOpenId = userOpenId;
+	}
+
+    public Book getBook() {
+		return book;
+	}
+
+	public void setBook(Book book) {
+		this.book = book;
+	}
+
+	
+	public Integer getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+
+	public Date getCartjoinCartTime() {
+		return cartjoinCartTime;
+	}
+
+	public void setCartjoinCartTime(Date cartjoinCartTime) {
+		this.cartjoinCartTime = cartjoinCartTime;
+	}
+
+	public Double getCartSum() {
+		return cartSum;
+	}
+
+	public void setCartSum(Double cartSum) {
+		this.cartSum = cartSum;
+	}
+
+	public Double getCartUnitPrice() {
+		return cartUnitPrice;
+	}
+
+	public void setCartUnitPrice(Double cartUnitPrice) {
+		this.cartUnitPrice = cartUnitPrice;
+	}
+
+	public Integer getCartCount() {
+		return cartCount;
+	}
+
+	public void setCartCount(Integer cartCount) {
+		this.cartCount = cartCount;
+	}
+
+	public Byte getCartIsDeleted() {
+		return cartIsDeleted;
+	}
+
+	public void setCartIsDeleted(Byte cartIsDeleted) {
+		this.cartIsDeleted = cartIsDeleted;
+	}
+
+	public Byte getCartIsCheck() {
+		return cartIsCheck;
+	}
+
+	public void setCartIsCheck(Byte cartIsCheck) {
+		this.cartIsCheck = cartIsCheck;
+	}
+
 	@Override
 	public String toString() {
-		return "Cart [cartId=" + cartId + ", cartJoinTime=" + cartJoinTime + ", cartTotalUndiscount="
-				+ cartTotalUndiscount + ", cartUnitPrice=" + cartUnitPrice + ", cartCount=" + cartCount
-				+ ", cartIsCheck=" + cartIsCheck + ", user=" + user + ", book=" + book + ", distributor=" + distributor
-				+ ", store=" + store + "]";
+		return "Cart [cartId=" + cartId + ", userId=" + userId + ", userUnionId=" + userUnionId + ", userOpenId="
+				+ userOpenId + ", bookId=" + bookId + ", cartjoinCartTime=" + cartjoinCartTime
+				+ ", cartSum=" + cartSum + ", cartUnitPrice=" + cartUnitPrice + ", cartCount="
+				+ cartCount + ", cartIsDeleted=" + cartIsDeleted + ", cartIsCheck=" + cartIsCheck + "]";
 	}
-			
+
+    
 }
