@@ -1,5 +1,6 @@
 package com.nsc.web.contorller;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,12 +85,13 @@ public class CartController {
 				System.out.println("当前日期初始化错误");
 				e.printStackTrace();
 			}
-			addCart.setCartJoinTime(parse);
+			addCart.setCartjoinCartTime(parse);
 			addCart.setBook(book);
 			addCart.setUser(user);
 			addCart.setCartUnitPrice(unitPrice);
 			addCart.setCartCount(count);
-			addCart.setCartTotalUndiscount(unitPrice*count);
+			Double sum = unitPrice.doubleValue()*count;
+			addCart.setCartSum(sum);
 			//保存订单信息到数据库
 			cartServiceImpl.saveCart(addCart);
 			System.out.println(addCart.getCartId()+"=========================");
@@ -109,9 +111,9 @@ public class CartController {
 				System.out.println("当前日期初始化错误");
 				e.printStackTrace();
 			}
-			cart.setCartJoinTime(parse);
+			cart.setCartjoinCartTime(parse);
 			cart.setCartCount(cart.getCartCount()+count);
-			cart.setCartTotalUndiscount(cart.getCartCount()*cart.getCartUnitPrice());
+			cart.setCartSum(cart.getCartCount() *cart.getCartUnitPrice().doubleValue());
 			//将更新的购物车信息，在数据库进行更新
 		    cartServiceImpl.updateCart(cart);
 		    //为小程序返回，操作状态
@@ -161,12 +163,12 @@ public class CartController {
 					System.out.println("当前日期初始化错误");
 					e.printStackTrace();
 				}
-				addCart.setCartJoinTime(parse);
+				addCart.setCartjoinCartTime(parse);
 				addCart.setBook(book);
 				addCart.setUser(user);
 				addCart.setCartUnitPrice(unitPrice);
 				addCart.setCartCount(count);
-				addCart.setCartTotalUndiscount(unitPrice*count);
+				addCart.setCartSum(unitPrice*count);
 				//保存订单信息到数据库
 				cartServiceImpl.saveCart(addCart);
 				System.out.println(addCart.getCartId()+"=========================");
@@ -182,9 +184,9 @@ public class CartController {
 					System.out.println("当前日期初始化错误");
 					e.printStackTrace();
 				}
-				cart.setCartJoinTime(parse);
+				cart.setCartjoinCartTime(parse);
 				cart.setCartCount(cart.getCartCount()+count);
-				cart.setCartTotalUndiscount(cart.getCartCount()*cart.getCartUnitPrice());
+				cart.setCartSum(cart.getCartCount()*cart.getCartUnitPrice());
 				//将更新的购物车信息，在数据库进行更新
 			    cartServiceImpl.updateCart(cart);
 			}
@@ -239,7 +241,7 @@ public class CartController {
 		System.out.println("cartId="+cartId+"   count="+count);
 		Cart cart = cartServiceImpl.findCartByCartId(cartId);
 		cart.setCartCount(count);
-		cart.setCartTotalUndiscount(count*cart.getCartUnitPrice());
+		cart.setCartSum(count*cart.getCartUnitPrice());
 		cartServiceImpl.updateBookCount(cart);
 		
 		BackState bs = new BackState();
