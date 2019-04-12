@@ -111,7 +111,6 @@ public class OrderController {
 			oit.setOitemUnitPrice(cart.getCartUnitPrice());
 			oit.setOitemCount(cart.getCartCount());
 			oit.setOrder(order);
-			oit.setDistributor(cart.getBook().getDistributor());
 			orderServiceImpl.saveOrderItem(oit);
 			flag++;
 		}

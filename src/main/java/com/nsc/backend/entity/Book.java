@@ -49,8 +49,7 @@ public class Book {
 		private  Category category;
 		private  SecondCategory  secondCate;
 		private	 ThirdCategory	thirdCate;
-		//关联供应商
-		private	Distributor distributor;
+		//关联所属商店
 		private Integer storeId; 
 		private String storeName;
 		public Integer getBookId() {
@@ -280,12 +279,6 @@ public class Book {
 		}
 		public void setThirdCate(ThirdCategory thirdCate) {
 			this.thirdCate = thirdCate;
-		}
-		public Distributor getDistributor() {
-			return distributor;
-		}
-		public void setDistributor(Distributor distributor) {
-			this.distributor = distributor;
 		}
 		public Integer getStoreId() {
 			return storeId;
