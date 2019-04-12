@@ -103,4 +103,9 @@ public class CartServiceImpl implements ICartService{
 		}
 
 	}
+	@Override
+	public Cart getCartByBIdAndUId(java.lang.Integer bookId, String unionId) {
+		
+		return null;
+	}
 }
