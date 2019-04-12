@@ -23,9 +23,9 @@ public class Cart {
     
     private Book book;
 
-	private Date cartjoinCartTime;
+	private Date cartJoinCartTime;
 
-	 private Double cartSum;
+	private Double cartSum;
 
     private Double cartUnitPrice;
 
@@ -93,13 +93,6 @@ public class Cart {
 		this.bookId = bookId;
 	}
 
-	public Date getCartjoinCartTime() {
-		return cartjoinCartTime;
-	}
-
-	public void setCartjoinCartTime(Date cartjoinCartTime) {
-		this.cartjoinCartTime = cartjoinCartTime;
-	}
 
 	public Double getCartSum() {
 		return cartSum;
@@ -112,9 +105,20 @@ public class Cart {
 	public Double getCartUnitPrice() {
 		return cartUnitPrice;
 	}
+	
 
 	public void setCartUnitPrice(Double cartUnitPrice) {
 		this.cartUnitPrice = cartUnitPrice;
+	}
+	
+	
+
+	public Date getCartJoinCartTime() {
+		return cartJoinCartTime;
+	}
+
+	public void setCartJoinCartTime(Date cartJoinCartTime) {
+		this.cartJoinCartTime = cartJoinCartTime;
 	}
 
 	public Integer getCartCount() {
@@ -144,7 +148,7 @@ public class Cart {
 	@Override
 	public String toString() {
 		return "Cart [cartId=" + cartId + ", userId=" + userId + ", userUnionId=" + userUnionId + ", userOpenId="
-				+ userOpenId + ", bookId=" + bookId + ", cartjoinCartTime=" + cartjoinCartTime
+				+ userOpenId + ", bookId=" + bookId + ", cartjoinCartTime=" + cartJoinCartTime
 				+ ", cartSum=" + cartSum + ", cartUnitPrice=" + cartUnitPrice + ", cartCount="
 				+ cartCount + ", cartIsDeleted=" + cartIsDeleted + ", cartIsCheck=" + cartIsCheck + "]";
 	}

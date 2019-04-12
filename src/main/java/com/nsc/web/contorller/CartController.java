@@ -85,7 +85,7 @@ public class CartController {
 				System.out.println("当前日期初始化错误");
 				e.printStackTrace();
 			}
-			addCart.setCartjoinCartTime(parse);
+			addCart.setCartJoinCartTime(parse);
 			addCart.setBook(book);
 			addCart.setUser(user);
 			addCart.setCartUnitPrice(unitPrice);
@@ -111,7 +111,7 @@ public class CartController {
 				System.out.println("当前日期初始化错误");
 				e.printStackTrace();
 			}
-			cart.setCartjoinCartTime(parse);
+			cart.setCartJoinCartTime(parse);
 			cart.setCartCount(cart.getCartCount()+count);
 			cart.setCartSum(cart.getCartCount() *cart.getCartUnitPrice().doubleValue());
 			//将更新的购物车信息，在数据库进行更新
@@ -163,7 +163,7 @@ public class CartController {
 					System.out.println("当前日期初始化错误");
 					e.printStackTrace();
 				}
-				addCart.setCartjoinCartTime(parse);
+				addCart.setCartJoinCartTime(parse);
 				addCart.setBook(book);
 				addCart.setUser(user);
 				addCart.setCartUnitPrice(unitPrice);
@@ -184,7 +184,7 @@ public class CartController {
 					System.out.println("当前日期初始化错误");
 					e.printStackTrace();
 				}
-				cart.setCartjoinCartTime(parse);
+				cart.setCartJoinCartTime(parse);
 				cart.setCartCount(cart.getCartCount()+count);
 				cart.setCartSum(cart.getCartCount()*cart.getCartUnitPrice());
 				//将更新的购物车信息，在数据库进行更新

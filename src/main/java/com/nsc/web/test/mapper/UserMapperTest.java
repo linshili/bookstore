@@ -17,9 +17,9 @@ import com.nsc.backend.mapper.ChangeMapper;
 import com.nsc.backend.mapper.UserMapper;
 import com.nsc.web.util.UUIDGenerator;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:application-context.xml", "classpath:config/*.xml" })
-@WebAppConfiguration
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = { "classpath:application-context.xml", "classpath:config/*.xml" })
+//@WebAppConfiguration
 public class UserMapperTest {
 	
 	@Resource
