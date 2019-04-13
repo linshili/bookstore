@@ -234,9 +234,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<trim prefix="set" suffixOverrides=",">
 			<if test="cartModCartTime!=null">cart_modCartTime = #{cartModCartTime} ,</if>
 			<if test="cartCount!=null"> cart_count= #{cartCount} ,</if>
-			<if test="cartUnitPrice!=null">cart_unitPrice = #{cartUnitPrice},</if>
-			<if test="book!=null">book_id = #{book.bookId} ,</if>
-			<if test="user!=null">user_openId = #{user.userOpenId} ,</if>
+			<if test="cartSum!=null"> cart_sum= #{cartSum} ,</if>
+			<!-- <if test="cartUnitPrice!=null">cart_unitPrice = #{cartUnitPrice},</if> -->
+			<!-- <if test="book!=null">book_id = #{book.bookId} ,</if> -->
+			<!-- <if test="user!=null">user_openId = #{user.userOpenId} ,</if> -->
 		</trim>
 		where cart_id = #{cartId}
 	</update>

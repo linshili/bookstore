@@ -36,7 +36,7 @@ public interface CartMapper {
 	//根据cartId的list集合，将List<Cart>查询出来 
 	List<Cart> findCartByList(List<Integer> list);
 	//修改数据中cart的count
-	void updateBookCount(Cart cart);
+	int updateBookCount(Cart cart);
 	//根据cartid查找cart
 	Cart findCartByCartId(Integer cartId);
 	//选中商品

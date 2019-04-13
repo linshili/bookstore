@@ -54,6 +54,11 @@ public class CartController {
 		System.out.println("这是测试方法的");
 	}
 	
+	/**
+	 * 保存用户购物车记录
+	 * @param info {unionId:"",bookId:"",unitPrice:"",count:""}
+	 * @return true/false(成功/失败)
+	 */
 	@RequestMapping("addToCartList")//N
 	@ResponseBody
 	public Boolean addToCartList( @RequestBody String info) {
@@ -103,7 +108,7 @@ public class CartController {
 	}
 	
 	/**
-	 * 添加购物车信息，如果已经包含则更新购物车的信息
+	 * 添加购物车信息，如果已经包含则更新购物车的信息(弃)
 	 * @param unionId
 	 * @param bookId
 	 * @param unitPrice
@@ -191,6 +196,11 @@ public class CartController {
 		
 	}
 	
+	/**
+	 * 保存用户缓存购物车记录(弃)
+	 * @param para 
+	 * @return
+	 */
 	@RequestMapping("cacheToCart")
 	@ResponseBody
 	public BackState cacheToCart(@RequestBody String para ){
@@ -296,20 +306,26 @@ public class CartController {
 	 */
 	@RequestMapping("updateBookCount")
 	@ResponseBody
-	public BackState updateBookCount(Integer cartId,Integer count){
+	public Boolean updateBookCount(Integer cartId,Integer count){
 		//修改数据中cart的count,先查找出cart，进行更新
 		System.out.println("cartId="+cartId+"   count="+count);
-		Cart cart = cartServiceImpl.findCartByCartId(cartId);
-		cart.setCartCount(count);
-		cart.setCartSum(count*cart.getCartUnitPrice());
-		cartServiceImpl.updateBookCount(cart);
-		
-		BackState bs = new BackState();
-		bs.setStateName("HTTP State 200");
-		return bs;
+		try {
+			Cart cart = cartServiceImpl.findCartByCartId(cartId);
+			cart.setCartCount(count);
+			cart.setCartSum( (double)count*cart.getCartUnitPrice());
+			cart.setCartModCartTime(DateTimeGenerator.getDateTime());
+			boolean isOK = cartServiceImpl.updateBookCount(cart);
+			if(isOK == true) {
+				return OpState.OK;				
+			}else {
+				return OpState.ERROR;
+			}
+		}catch(Exception e){
+			LogUtil.out(classname, "updateBookCount", "exception-->"+e.toString());
+			return OpState.ERROR;
+		}
+
 	}
-	
-	
 	
 	
 	@RequestMapping("isCheck")

@@ -22,10 +22,21 @@ public interface ICartService {
 	void deleteCart(List<Integer> list);
 	//根据cartId的list集合，将List<Cart>查询出来 
 	List<Cart> findCartByList(List<Integer> list);
-	//修改数据中cart的count
-	void updateBookCount(Cart cart);
-	//根据cartid查找cart
+
+	/**
+	 * 修改购物车记录中商品的数量
+	 * @param cart 购物车记录实例
+	 * @return true/false (成功/失败)
+	 */
+	Boolean updateBookCount(Cart cart);
+	
+	/**
+	 * 根据cartId查找cart
+	 * @param cartId Cart记录Id
+	 * @return Cart实例
+	 */
 	Cart findCartByCartId(Integer cartId);
+	
 	//选中购物车中的商品
 	void isCheck(List<Integer> cartlist);
 	//查找对应商家需要付款的cart
