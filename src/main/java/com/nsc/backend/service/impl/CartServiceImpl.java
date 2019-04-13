@@ -13,6 +13,7 @@ import com.nsc.backend.entity.CartExample;
 import com.nsc.backend.entity.CartExample.Criteria;
 import com.nsc.backend.mapper.CartMapper;
 import com.nsc.backend.service.ICartService;
+import com.nsc.web.util.DateTimeGenerator;
 import com.nsc.web.util.LogUtil;
 import com.nsc.web.util.backstate.BackState;
 
@@ -62,13 +63,28 @@ public class CartServiceImpl implements ICartService{
 		List<Cart> clist = cartMapper.findCartByList(list);
 		return clist;
 	}
+	
 	//修改数据中cart的count
-	public void updateBookCount(Cart cart) {
-		cartMapper.updateBookCount(cart);
+	public Boolean updateBookCount(Cart cart) {
+		
+		try {
+			
+			int result = cartMapper.updateBookCount(cart);
+			if(result==1) {
+				return true;
+			}
+			return false;
+		}catch(Exception e) {
+			LogUtil.out(classname, "updateBookCount", "exception->"+e.toString());
+			return false;
+		}
+		
 	}
-	//根据cartid查找cart
+	
+	
 	public Cart findCartByCartId(Integer cartId) {
-		Cart cart = cartMapper.findCartByCartId(cartId);
+		//Cart cart = cartMapper.findCartByCartId(cartId);
+		Cart cart = cartMapper.selectByPrimaryKey(cartId);
 		return cart;
 	}
 	
@@ -139,7 +155,7 @@ public class CartServiceImpl implements ICartService{
 		}
 		try {
 			for(int i = 0, len = carts.length; i < len; i++) {
-				cartMapper.insert(carts[i]);
+				cartMapper.insertSelective(carts[i]);
 			}
 			return true;
 		}catch(Exception e) {
