@@ -77,7 +77,7 @@ public class Cart {
 
 
 	public Double getCartSum() {
-		return cartSum;
+		return this.cartSum;
 	}
 
 	public void setCartSum(Double cartSum) {
