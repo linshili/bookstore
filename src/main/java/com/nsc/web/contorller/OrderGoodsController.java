@@ -78,12 +78,6 @@ public class OrderGoodsController {
 	 * @throws java.text.ParseException 
 	 */
 
-	
-	
-	
-	
-	
-	
 	@RequestMapping("/addToOrderGoods")
 	@ResponseBody
 	//@RequestBody String orderparam,@RequestBody String goodsparam
@@ -112,7 +106,7 @@ public class OrderGoodsController {
 		
 		String s ="=======================主订单===========================";
 		//订单编号
-		String order_number =OrderUtil.getRandom(0);
+		String order_number =OrderUtil.getOrderNum(0);
 		//订单生成时间
 		Date order_time = null;
 		try {
@@ -148,7 +142,7 @@ public class OrderGoodsController {
 		//若主订单生成异常，则则重新生成，
 		int n=0;
 		while(orderbase.getOrderId()==null&&n<5) {
-			orderbase.setOrderNumber(OrderUtil.getRandom(0));
+			orderbase.setOrderNumber(OrderUtil.getOrderNum(0));
 			orderBaseServiceImpl.saveOrderbase(orderbase);
 			System.out.println("订单一重新生成！");
 			state.setStateName("HTTP Status 200");
@@ -179,7 +173,7 @@ public class OrderGoodsController {
 			try {
 				ordergoods.setOrderBase(orderbase);
 				ordergoods.setOrderNumber(orderbase.getOrderNumber());
-				ordergoods.setOrdergoodsNumber(OrderUtil.getRandom(storeId));
+				ordergoods.setOrdergoodsNumber(OrderUtil.getOrderNum(storeId));
 				ordergoods.setOrderState(0);//订单支付状态初始值为0
 				ordergoods.setOrdergoodsCount(count);
 				ordergoods.setInvoice(invoice);
@@ -196,7 +190,7 @@ public class OrderGoodsController {
 				n=0;
 				//若主订单生成异常，则则重新生成，
 				while(ordergoods.getOrdergoodsId()==null&&n<5) {
-					ordergoods.setOrdergoodsNumber(OrderUtil.getRandom(storeId));
+					ordergoods.setOrdergoodsNumber(OrderUtil.getOrderNum(storeId));
 					orderGoodsServiceImpl.saveOrderGoods(ordergoods);
 					System.out.println("订单一重新生成！");
 					state.setStateName("HTTP Status 200");
@@ -225,7 +219,8 @@ public class OrderGoodsController {
 		Json payjson = new Json();
 		WeixinController w = new WeixinController();
 		System.out.println("+++++++++WeixinController+++++++++");
-		payjson=w.wxPay(openId, orderbase.getOrderNumber(), totalAcount, request);
+		//payjson=w.wxPay(openId, orderbase.getOrderNumber(), totalAcount, request);
+		payjson = null;
 		System.out.println("调用统一下单接口返回值payjson===="+payjson.toString());
 		states.add(payjson);
 		s="=============================================================";
@@ -272,7 +267,7 @@ public class OrderGoodsController {
 				String goodsNumber = jsonobject.getString("goodsNumber");
 				
 				OrderBase orderbase = new OrderBase();
-				orderbase.setOrderNumber(OrderUtil.getRandom(0));
+				orderbase.setOrderNumber(OrderUtil.getOrderNum(0));
 				orderbase.setOrderTime(orderbaseOld.getOrderTime());
 				orderbase.setOrderTotalacount(orderbaseOld.getOrderTotalacount());
 				orderbase.setUser(orderbaseOld.getUser());
@@ -283,7 +278,7 @@ public class OrderGoodsController {
 				//若主订单生成异常，则则重新生成，
 				int n=0;
 				while(orderbase.getOrderId()==null&&n<5) {
-					orderbase.setOrderNumber(OrderUtil.getRandom(0));
+					orderbase.setOrderNumber(OrderUtil.getOrderNum(0));
 					orderBaseServiceImpl.saveOrderbase(orderbase);
 					n++;
 				}

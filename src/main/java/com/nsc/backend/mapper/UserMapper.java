@@ -24,6 +24,13 @@ public interface UserMapper {
 	List<User> selectUserByExample(UserExample example);
 	
 	/**
+	 * 根据用户UnionId查找用户的id
+	 * @param unionId
+	 * @return userId
+	 */
+	Integer findUserByUnionId(String unionId);
+	
+	/**
 	 * 选择性保存User到数据库
 	 * @param user 
 	 * @return 保存成功的记录数

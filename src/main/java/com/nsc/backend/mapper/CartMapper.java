@@ -31,8 +31,13 @@ public interface CartMapper {
 	void saveCart(Cart cart);
 	//根据用户id将此用户的购物信息，查找出来
 	List<Cart> showCart(String openId);
-	//将list传向持久层，删除购物车信息
-	void deleteCart(List<Integer> list);
+
+	/**
+	 * 将list传向持久层，删除购物车信息
+	 * @param list
+	 */
+	int deleteCart(List<Integer> list);
+	
 	//根据cartId的list集合，将List<Cart>查询出来 
 	List<Cart> findCartByList(List<Integer> list);
 	//修改数据中cart的count
@@ -64,7 +69,7 @@ public interface CartMapper {
 
     List<Cart> selectByExample(CartExample example);
 
-    Cart selectByPrimaryKey(Integer cart_id);
+    Cart selectByPrimaryKey(Integer cartId);
 
     int updateByExampleSelective(@Param("record") Cart record, @Param("example") CartExample example);
 

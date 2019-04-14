@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.alibaba.druid.support.logging.Log;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.nsc.backend.entity.Book;
@@ -278,24 +279,31 @@ public class CartController {
 	 */
 	@RequestMapping("deleteCart")
 	@ResponseBody
-	public BackState deleteBooks(@RequestBody String para){
+	public Boolean deleteBooks(@RequestBody String para){
 		//测试数据json串
-		String paralist ="{\"openId\":\"o_1QS0WoXqiTeHge-MzBJ1CnPOL0\","
-				+ "\"cartList\":[{\"cartId\":17},{\"cartId\":18},{\"cartId\":19}]}";
-		JSONObject json = JSONObject.parseObject(para);
-		JSONArray arr = (JSONArray) json.get("cartList");
-		String openId = (String) json.get("openId");
-		//生成jsonArray解析为list
-		List<Integer> list = new ArrayList<Integer>();
-		for(int i=0;i<arr.size();i++){
-			JSONObject jsonObject = arr.getJSONObject(i);
-			list.add(jsonObject.getInteger("cartId"));
+		try {
+			/*String paralist ="{\"unionId\":\"o_1QS0WoXqiTeHge-MzBJ1CnPOL0\","
+					+ "\"cartList\":[{\"cartId\":17},{\"cartId\":18},{\"cartId\":19}]}";*/
+			JSONObject json = JSONObject.parseObject(para);
+			JSONArray arr = (JSONArray) json.get("cartList");
+			String unionId = (String) json.get("unionId");
+			//生成jsonArray解析为list
+			List<Integer> list = new ArrayList<Integer>();
+			for(int i=0;i<arr.size();i++){
+				JSONObject jsonObject = arr.getJSONObject(i);
+				list.add(jsonObject.getInteger("cartId"));
+			}
+			//将list传向持久层，删除购物车信息
+			boolean isOk = cartServiceImpl.deleteCart(list);
+			if(isOk == true) {
+				return OpState.OK;
+			}
+			return OpState.ERROR;
+		}catch(Exception e) {
+			LogUtil.out(classname, "deleteBooks", "exception-->"+e.toString());
+			return OpState.ERROR;
 		}
-		//将list传向持久层，删除购物车信息
-		cartServiceImpl.deleteCart(list);
-		BackState backState = new BackState();
-		backState.setStateName("HTTP State 200");
-		return backState;
+		
 	}
 	
 	

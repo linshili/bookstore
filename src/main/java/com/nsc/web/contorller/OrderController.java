@@ -24,7 +24,10 @@ import com.nsc.backend.service.IAddressService;
 import com.nsc.backend.service.ICartService;
 import com.nsc.backend.service.IOrderService;
 import com.nsc.backend.service.IUserService;
+import com.nsc.backend.service.impl.OrderBaseServiceImpl;
+import com.nsc.web.util.LogUtil;
 import com.nsc.web.util.backstate.BackState;
+import com.nsc.web.util.backstate.OpState;
 
 /**    
  * 将购物车，提交生成订单
@@ -33,6 +36,8 @@ import com.nsc.web.util.backstate.BackState;
 @Controller
 @RequestMapping("/order")
 public class OrderController {
+	
+	public static final String classname = "OrderController";
 	
 	@Autowired
 	private IOrderService orderServiceImpl;
@@ -168,6 +173,8 @@ public class OrderController {
 		System.out.println("showOrders is Success");
 		return olist;
 	}
+	
+	
 	
 	
 	
