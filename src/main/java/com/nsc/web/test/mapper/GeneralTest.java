@@ -10,11 +10,15 @@ import com.nsc.web.util.DateTimeGenerator;
 
 public class GeneralTest {
 
-	@Test
+	//@Test
 	public void test() {
 		
 		Date dateNow = DateTimeGenerator.getDateTime();
 		System.out.println(dateNow.toString());
+		
+	}
+	
+	public void tettFastJson() {
 		
 	}
 

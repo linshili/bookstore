@@ -1,6 +1,12 @@
 package com.nsc.backend.entity;
 
 //微信用户的地址
+/**
+ * 
+ * @Desc 用户的收货通讯地址实体类
+ * @author sjg
+ * @Date 2019年4月14日
+ */
 public class Address {
 	private Integer addId;
 	private	String	addUserName;
@@ -11,6 +17,7 @@ public class Address {
 	private	String	addDetailInfo;
 	private	String	addNationalCode;
 	private	String	addTele;
+	
 	//选择是否默认地址
 	private	Boolean	addDefault;
 	//一个用户可以有多个地址,但一个地址仅对应一个用户

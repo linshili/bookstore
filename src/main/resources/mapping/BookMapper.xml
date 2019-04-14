@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result column="book_picture" property="bookPicture"/>
 		<result column="book_titles" property="bookTitles"/>
 		<result column="book_measurementUnit" property="bookMeasurementUnit"/>
-		<result column="publish_house" property="publish_house"/>
+		<result column="publish_house" property="publishHouse"/>
 		<result column="book_discount" property="bookDiscount"/>
 		<result column="book_note" property="bookNote"/>
 		<result column="order_freight" property="orderFreight"/>

@@ -68,10 +68,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select
 		user.user_id,
 		user.user_nickName,
+		user.user_unionId,
 		user.user_openId
 		from user
 		where
 		user.user_openId = #{openId}
+	</select>
+	<!-- 根据用户userUnionId查找出用户userId -->
+	<select id="findUserByUnionId" parameterType="String" resultType="java.lang.Integer">
+		select
+		user.user_id
+		from user
+		where
+		user.user_unionId = #{userUnionId}
 	</select>
 	<!-- 根据条件查询用户 -->
 	<select id="selectUserByExample" parameterType="com.nsc.backend.entity.UserExample"

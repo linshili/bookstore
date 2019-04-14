@@ -18,8 +18,13 @@ public interface ICartService {
 	//保存订单信息到数据库
 	void saveCart(Cart cart);
 	
-	//将list传向持久层，删除购物车信息
-	void deleteCart(List<Integer> list);
+	/**
+	 * 删除购物车信息
+	 * @param list 购物车记录id数组
+	 * @return true/false(成功/失败)
+	 */
+	Boolean deleteCart(List<Integer> list);
+	
 	//根据cartId的list集合，将List<Cart>查询出来 
 	List<Cart> findCartByList(List<Integer> list);
 
