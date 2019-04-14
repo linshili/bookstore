@@ -1,5 +1,6 @@
 package com.nsc.web.test.mapper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import com.nsc.backend.entity.CartExample;
 import com.nsc.backend.entity.CartExample.Criteria;
 import com.nsc.backend.mapper.CartMapper;
 import com.nsc.web.util.DateTimeGenerator;
+import com.nsc.web.util.LogUtil;
 
 /**
  * 
@@ -47,7 +49,7 @@ public class CartMapperTest {
 		
 	}
 	
-	@Test
+	//@Test
 	public void testInsetCartItem() {
 		
 		Cart[] carts = new Cart[3];
@@ -92,4 +94,19 @@ public class CartMapperTest {
 		cartMapper.updateByPrimaryKeySelective(carts[1]);
 	}
 
+	/**
+	 * 测试删除购物车记录
+	 */
+	@Test
+	public void testDeleteCartItems() {
+		
+		List<Integer> list = new ArrayList<>();
+		list.add(62);
+		list.add(63);
+		list.add(64);
+		
+		int res = cartMapper.deleteCart(list);
+
+		System.out.println("info--删除记录数--"+res);
+	}
 }

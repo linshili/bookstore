@@ -4,7 +4,51 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nsc.backend.mapper.ChangeMapper">
 
-    <resultMap type="book" id="bookResultMap">
+	<resultMap id="bookResultMap" type="book">
+		<!-- <id column="book_id" jdbcType="INTEGER" property="bookId" />
+		<result column="book_ISBN" jdbcType="VARCHAR" property="bookISBN" />
+		<result column="book_name" jdbcType="VARCHAR" property="bookName" />
+		<result column="book_unitPrice" jdbcType="DOUBLE" property="bookUnitPrice" />
+		<result column="book_author" jdbcType="VARCHAR" property="bookAuthor" />
+		<result column="book_pubTime" jdbcType="TIMESTAMP" property="bookPubTime" />
+		<result column="book_priTime" jdbcType="TIMESTAMP" property="bookPriTime" />
+		<result column="book_edtion" jdbcType="VARCHAR" property="bookEdtion" />
+		<result column="book_impression" jdbcType="VARCHAR" property="bookImpression" />
+		<result column="book_size" jdbcType="VARCHAR" property="bookSize" />
+		<result column="book_paper" jdbcType="VARCHAR" property="bookPaper" />
+		<result column="book_packing" jdbcType="VARCHAR" property="bookPacking" />
+		<result column="book_suit" jdbcType="VARCHAR" property="bookSuit" />
+		<result column="book_imgUrl" jdbcType="VARCHAR" property="bookImgUrl" />
+		<result column="book_stock" jdbcType="INTEGER" property="bookStock" />
+		<result column="book_validityPeriod" jdbcType="TIMESTAMP"
+			property="bookValidityPeriod" />
+		<result column="book_originalPrice" jdbcType="INTEGER"
+			property="bookOriginalPrice" />
+		<result column="book_isDetele" jdbcType="BIT" property="bookIsDetele" />
+		<result column="book_keyWord1" jdbcType="VARCHAR" property="bookKeyWord1" />
+		<result column="book_keyWord2" jdbcType="VARCHAR" property="bookKeyWord2" />
+		<result column="book_seriesAb" jdbcType="VARCHAR" property="bookSeriesAb" />
+		<result column="book_publicSort" jdbcType="VARCHAR" property="bookPublicSort" />
+		<result column="book_scores" jdbcType="VARCHAR" property="bookScores" />
+		<result column="book_code" jdbcType="VARCHAR" property="bookCode" />
+		<result column="book_titles" jdbcType="VARCHAR" property="bookTitles" />
+		<result column="book_measurementUnit" jdbcType="VARCHAR"
+			property="bookMeasurementUnit" />
+		<result column="cate_id" jdbcType="INTEGER" property="cateId" />
+		<result column="publish_house" jdbcType="VARCHAR" property="publishHouse" />
+		<result column="store_id" jdbcType="INTEGER" property="storeId" />
+		<result column="store_name" jdbcType="VARCHAR" property="storeName" />
+		<result column="evaluate_id" jdbcType="INTEGER" property="evaluateId" />
+		<result column="book_discount" jdbcType="DECIMAL" property="bookDiscount" />
+		<result column="book_note" jdbcType="VARCHAR" property="bookNote" />
+		<result column="order_freight" jdbcType="DECIMAL" property="orderFreight" />
+
+		<result column="book_preface" jdbcType="LONGVARCHAR" property="bookPreface" />
+		<result column="book_conBrief" jdbcType="LONGVARCHAR" property="bookConBrief" />
+		<result column="book_authorBrief" jdbcType="LONGVARCHAR"
+			property="bookAuthorBrief" />
+		<result column="book_catalog" jdbcType="LONGVARCHAR" property="bookCatalog" />
+		<result column="book_picture" jdbcType="LONGVARCHAR" property="bookPicture" /> -->
 		<id     column="book_id" property="bookId"/>
 		<result column="book_ISBN" property="bookISBN"/>
 		<result column="book_name" property="bookName"/>
@@ -36,89 +80,110 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result column="book_picture" property="bookPicture"/>
 		<result column="book_titles" property="bookTitles"/>
 		<result column="book_measurementUnit" property="bookMeasurementUnit"/>
-		<result column="publish_house" property="publish_house"/>
+		<result column="publish_house" property="publishHouse"/>
 		<result column="book_discount" property="bookDiscount"/>
 		<result column="book_note" property="bookNote"/>
 		<result column="order_freight" property="orderFreight"/>
 		<result column="store_id" property="storeId"/>
 		<result column="store_name" property="storeName"/>
-		
-		<!-- 作为book类外键 ,封装到book表中返回-->
-		<!--  -->
-		<association property="secondCate" javaType="com.nsc.backend.entity.SecondCategory" >
-				<id property="secondCateId" column="secondCate_id"/>
-				<result property="secondCateName" column="secondCate_name"/>
-		</association>		
+
+		<!-- 作为book类外键 ,封装到book表中返回 -->
+		<association property="secondCate"
+			javaType="com.nsc.backend.entity.SecondCategory">
+			<id property="secondCateId" column="secondCateId" />
+			<result property="secondCateName" column="secondCateName" />
+		</association>
 	</resultMap>
+	<sql id="Base_Column_List">
+		book_id, book_ISBN, book_name, book_unitPrice, book_author, book_pubTime,
+		book_priTime,
+		book_edtion, book_impression, book_size, book_paper, book_packing, book_suit,
+		book_imgUrl,book_preface,book_conBrief,book_authorBrief,book_catalog,book_picture,
+		book_stock, book_validityPeriod, book_originalPrice, book_isDetele,
+		book_keyWord1,
+		book_keyWord2, book_seriesAb, book_publicSort, book_scores, book_code, book_titles,
+		book_measurementUnit, cate_id, secondCate_id, thirdCate_id,
+		publish_house, store_id,
+		store_name, evaluate_id, book_discount, book_note, order_freight
+	</sql>
 
-     <!--畅销 换一换  -->
-      <select id="cBestSelling" resultMap="bookResultMap">
-           select
-           book.*
-           from book,orderitem
-           where orderitem.book_id=book.book_id
-           order by orderitem.oitem_count DESC
-           limit #{0},#{1}
-      </select>
-      
-      <!-- 降价-换一换 -->
-      <select id="cPrice" resultMap="bookResultMap">
-           select
-           book.*
-           from book
-           order by book.book_id DESC
-           limit #{0},#{1}
-      </select>
-      
-      <!-- 文学小说-换一换 -->
-      <select id="cNovel" resultMap="bookResultMap">
-           select 
-           book.*
-           from book
-           where book.cate_id=#{0}
-           order by book.book_id DESC
-           limit #{1},#{2}
-      </select>
-      
-      <!-- 人文历史-换一换 -->
-      <select id="cHistory" resultMap="bookResultMap">
-           select 
-           book.*
-           from book
-           where book.cate_id=#{0}
-           order by book.book_id DESC
-           limit #{1},#{2}
-      </select>
-      
-      <!-- 经济管理-换一换 -->
-      <select id="cEconomic" resultMap="bookResultMap">
-           select 
-           book.*
-           from book
-           where book.cate_id=#{0}
-           order by book.book_id DESC
-           limit #{1},#{2}
-      </select>
-      
-       <!-- 教育学习-换一换 -->
-       <select id="cEducation" resultMap="bookResultMap">
-           select 
-           book.*
-           from book
-           where book.secondCate_id=#{0}
-           order by book.book_id DESC
-           limit #{1},#{2}
-      </select>
 
-         <!-- IT科技-换一换 -->
-       <select id="cTechnology" resultMap="bookResultMap">
-           select 
-           book.*
-           from book
-           where book.cate_id=#{0}
-           order by book.book_id DESC
-           limit #{1},#{2}
-      </select>
+	<!--畅销 换一换 -->
+	<select id="cBestSelling" resultMap="bookResultMap">
+		select
+		book.*
+		from
+		book,orderitem
+		where orderitem.book_id=book.book_id
+		order by
+		orderitem.oitem_count DESC
+		limit #{0},#{1}
+	</select>
+
+	<!-- 降价-换一换 -->
+	<select id="cPrice" resultMap="bookResultMap">
+		select
+		book.*
+		from book
+		order by
+		book.book_id DESC
+		limit #{0},#{1}
+	</select>
+
+	<!-- 文学小说-换一换 -->
+	<select id="cNovel" resultMap="bookResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from book
+		where
+		book.cate_id=#{0}
+		order by book.book_id DESC
+		limit #{1},#{2}
+	</select>
+
+	<!-- 人文历史-换一换 -->
+	<select id="cHistory" resultMap="bookResultMap">
+		select
+		book.*
+		from book
+		where
+		book.cate_id=#{0}
+		order by book.book_id DESC
+		limit #{1},#{2}
+	</select>
+
+	<!-- 经济管理-换一换 -->
+	<select id="cEconomic" resultMap="bookResultMap">
+		select
+		book.*
+		from book
+		where
+		book.cate_id=#{0}
+		order by book.book_id DESC
+		limit #{1},#{2}
+	</select>
+
+	<!-- 教育学习-换一换 -->
+	<select id="cEducation" resultMap="bookResultMap">
+		select
+		book.*
+		from book
+		where
+		book.secondCate_id=#{0}
+		order by book.book_id DESC
+		limit #{1},#{2}
+	</select>
+
+	<!-- IT科技-换一换 -->
+	<select id="cTechnology" resultMap="bookResultMap">
+		select
+		book.*
+		from book
+		where
+		book.cate_id=#{0}
+		order by book.book_id DESC
+		limit #{1},#{2}
+	</select>
 
 
 </mapper>

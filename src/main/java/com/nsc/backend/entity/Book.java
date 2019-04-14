@@ -1,12 +1,13 @@
 package com.nsc.backend.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * Book实体类
  * @author Lenovo
- *
  */
+
 public class Book {
 	
 		//基本属性
@@ -31,7 +32,7 @@ public class Book {
 		private Integer bookStock;
 		private Date  bookValidityPeriod;
 		private String bookOriginalPrice;
-		private int bookIsDetele;
+		private Integer bookIsDetele;
 		private String bookKeyWord1;
 		private String bookKeyWord2;
 		private String bookSeriesAb;
@@ -41,7 +42,7 @@ public class Book {
 		private String bookPicture;
 		private String bookTitles;
 		private String bookMeasurementUnit;
-		private String publish_house;
+		private String publishHouse;
 		private Double bookDiscount;
 		private String bookNote;
 		private Double orderFreight;
@@ -52,6 +53,8 @@ public class Book {
 		//关联所属商店
 		private Integer storeId; 
 		private String storeName;
+
+		
 		public Integer getBookId() {
 			return bookId;
 		}
@@ -238,11 +241,11 @@ public class Book {
 		public void setBookMeasurementUnit(String bookMeasurementUnit) {
 			this.bookMeasurementUnit = bookMeasurementUnit;
 		}
-		public String getPublish_house() {
-			return publish_house;
+		public String getpublishHouse() {
+			return publishHouse;
 		}
-		public void setPublish_house(String publish_house) {
-			this.publish_house = publish_house;
+		public void setpublishHouse(String publishHouse) {
+			this.publishHouse = publishHouse;
 		}
 		public Double getBookDiscount() {
 			return bookDiscount;
@@ -302,11 +305,12 @@ public class Book {
 					+ bookKeyWord1 + ", bookKeyWord2=" + bookKeyWord2 + ", bookSeriesAb=" + bookSeriesAb
 					+ ", bookPublicSort=" + bookPublicSort + ", bookScores=" + bookScores + ", bookCode=" + bookCode
 					+ ", bookPicture=" + bookPicture + ", bookTitles=" + bookTitles + ", bookMeasurementUnit="
-					+ bookMeasurementUnit + ", publish_house=" + publish_house + ", bookDiscount=" + bookDiscount
+					+ bookMeasurementUnit + ", publishHouse=" + publishHouse + ", bookDiscount=" + bookDiscount
 					+ ", bookNote=" + bookNote + ", orderFreight=" + orderFreight + ", category=" + category
 					+ ", secondCate=" + secondCate + ", thirdCate=" + thirdCate + ", storeId=" + storeId
 					+ ", storeName=" + storeName + " }";
 		}
+		
 		
 		
 		

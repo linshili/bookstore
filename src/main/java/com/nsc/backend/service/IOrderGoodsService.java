@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.nsc.backend.entity.OrderBase;
 import com.nsc.backend.entity.OrderGoods;
+import com.nsc.backend.entity.OrderSub;
+import com.nsc.backend.entity.OrderSup;
 
 public interface IOrderGoodsService {
 	
@@ -19,4 +21,12 @@ public interface IOrderGoodsService {
     List<OrderGoods> showOrderGoodsByIspay(List<OrderBase> listb,Integer state);
     //逻辑删除子订单
     void updateOGoodsState(String ordergoodsnumber,Integer state);
+    
+    /**
+     * 保存子订单实例
+     * @param orderSubs 子订单实例数组
+     * @param orderSupNum 主订单实例
+     * @return 成功保存子订单记录数
+     */
+    int saveOrderSub(List<OrderSub> orderSubs,OrderSup orderSup);
 }

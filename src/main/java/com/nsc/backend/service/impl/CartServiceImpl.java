@@ -55,8 +55,19 @@ public class CartServiceImpl implements ICartService{
 	}
 	
 	//将list传向持久层，删除购物车信息
-	public void deleteCart(List<Integer> list) {
-		cartMapper.deleteCart(list);
+	public Boolean deleteCart(List<Integer> list) {
+		try {
+			
+			int res = cartMapper.deleteCart(list);
+			LogUtil.out(classname, "deleteCart", String.valueOf(res));	
+			if(res == list.size() ) {
+				return true;
+			}
+		}catch(Exception e) {
+			LogUtil.out(classname, "deleteCart", "exception-->"+e.toString());	
+		}
+		
+		return false;
 	}
 	//根据cartId的list集合，将List<Cart>查询出来 
 	public List<Cart> findCartByList(List<Integer> list) {
