@@ -24,12 +24,14 @@ import com.nsc.backend.entity.Book;
 import com.nsc.backend.entity.OrderBase;
 import com.nsc.backend.entity.OrderSub;
 import com.nsc.backend.entity.OrderSup;
+import com.nsc.backend.entity.OrderSupStatus;
 import com.nsc.backend.entity.User;
 import com.nsc.backend.service.IAddressService;
 import com.nsc.backend.service.IOrderBaseService;
 import com.nsc.backend.service.IOrderGoodsService;
 import com.nsc.backend.service.IUserService;
 import com.nsc.backend.service.impl.AddressServiceImpl;
+import com.nsc.web.util.DateTimeGenerator;
 import com.nsc.web.util.LogUtil;
 import com.nsc.web.util.OrderUtil;
 import com.nsc.web.util.backstate.BackState;
@@ -135,7 +137,7 @@ public class OrderBaseController {
 		System.out.println(date);
 		
 		System.out.println("orderBaseServiceImpl====="+orderBaseServiceImpl);
-		orderBaseServiceImpl.updateOrderBase(orderNumber, date, tMerchantnumber,"");
+		orderBaseServiceImpl.updateOrderBaseByWx(orderNumber, date, tMerchantnumber,"");
 		
 		
 	}
@@ -180,6 +182,7 @@ public class OrderBaseController {
 		try {
 			JSONObject jsonObj = JSONObject.parseObject(orderInfo);
 			System.out.println(jsonObj);
+			
 			//1.获取用户唯一Id
 			String unionId = jsonObj.getString("unionId");
 			//2.获取微信用户的openId，用作微信支付接口的参数
@@ -189,39 +192,113 @@ public class OrderBaseController {
 			JSONObject addrJson = jsonObj.getJSONObject("addr");
 			Address address = JSON.parseObject(addrJson.toJSONString(), new TypeReference<Address>() {});
 			Integer addrId = address.getAddId();
-			//4.获取商品列表
-			JSONArray list = jsonObj.getJSONArray("orderGoodsList");
-			List<OrderSub> orderSubs = JSON.parseObject(list.toJSONString(), new TypeReference< List<OrderSub> >(){} );
 			
 			if( addrId == null) {
-				//保存用户的收货通讯地址
-				boolean isOk = addressServiceImpl.saveWeiAdd(address);
-				if(isOk == false) {
-					LogUtil.out(classname, "coommitOrder", "保存地址失败-->boolean isOk = addressServiceImpl.saveWeiAdd(address);");
+				//4.保存用户的收货通讯地址
+				addrId = addressServiceImpl.saveWeiAdd(address);
+				if(addrId == null) {
+					LogUtil.out(classname, "commitOrderByWx", "保存地址失败-->boolean isOk = addressServiceImpl.saveWeiAdd(address);");
 					return OpState.ERROR;
 				}
 			}
-			//生成未支付主订单
-			OrderSup orderSup = orderBaseServiceImpl.saveSupOrderNoPay(unionId, moneySum, addrId);
-			if(orderSup == null) {
-				LogUtil.out(classname, "coommitOrder", "保存未支付主订单失败-->orderBaseServiceImpl.saveSupOrderNoPay(unionId, moneySum, addrId);");
-				return OpState.ERROR;
+			//5.获取商品列表
+			JSONArray list = jsonObj.getJSONArray("orderGoodsList");
+			List<OrderSub> orderSubs = JSON.parseObject(list.toJSONString(), new TypeReference< List<OrderSub> >(){} );
+			
+			Integer orderGoodsId = jsonObj.getInteger("orderGoodsId");
+			Integer orderId =  jsonObj.getInteger("orderId");
+			String orderGoodsNumber = jsonObj.getString("orderGoodsNumber");
+			
+			OrderSup orderSup = null;
+			
+			if(orderGoodsId == null && orderId == null && orderGoodsNumber == null) {
+				//首次提交订单
+				LogUtil.out(classname, "commitOrderByWx", "首次提交订单-->");
+				
+				
+				//6.生成未支付主订单(配置1 & 2 & 3 & 4 & 5 & 6 & 7 项)
+				orderSup = orderBaseServiceImpl.saveSupOrderNoPay(unionId, moneySum, addrId);
+				if(orderSup == null) {
+					LogUtil.out(classname, "commitOrderByWx", "保存未支付主订单失败-->orderBaseServiceImpl.saveSupOrderNoPay(unionId, moneySum, addrId);");
+					return OpState.ERROR;
+				}
+				//7.生成未支付主订单下的子订单(配置1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 项)
+				int numOrderGoods = orderGoodsServiceImpl.saveOrderSub(orderSubs, orderSup);
+				if(numOrderGoods != orderSubs.size()) {
+					LogUtil.out(classname, "commitOrderByWx", "保存未支付子订单失败-->int numOrderGoods = orderGoodsServiceImpl.saveOrderSub(orderSubs, orderSup);");
+					return OpState.ERROR;
+				}
+				
+			}else {
+				//重新提交未支付订单
+				LogUtil.out(classname, "commitOrderByWx", "重新提交订单-->");
+				//1.重新生成主订单)
+				/**
+				 * {"orderGoodsId":106,
+				 * "unionId":"oEQJo5L1jca2Ctp0fr4zwbg_Ghis",
+				 * "orderGoodsList":
+				 * [{
+				 * "orderGoodsTotalPrice":0.01,
+				 * "orderGoodsCount":1,"storeId":3,
+				 * "bookId":930
+				 * }],
+				 * "orderId":50,
+				 * "openId":"oEQJo5L1jca2Ctp0fr4zwbg_Ghis",
+				 * "moneySum":0.01,
+				 * "addr":{
+				 * "addProvince":"北京",
+				 * "addCounty":"东城区",
+				 * "addDefault":true,
+				 * "addTele":"15503645230",
+				 * "addPostalCode":"",
+				 * "addDetailInfo":"田园街区甘井01号",
+				 * "addId":94,
+				 * "addNationalCode":"",
+				 * "addCity":"北京市",
+				 * "addUserName":"史建刚"
+				 * } }
+				 * 1--主订单编号:设置为当前提交的子订单的编号
+				 * 2--主订单总金额: "orderGoodsTotalPrice":0.01,
+				 * 3--主订单地址Id: "addr":{"addId":94,}
+				 * 4--用户UnionId:  "unionId":"oEQJo5L1jca2Ctp0fr4zwbg_Ghis",
+				 * 5--主订单生成时间: 调用时间生成类
+				 * 6--主订单IsValid: false
+				 */
+				orderSup = new OrderSup();
+				orderSup.setOrderNumber(orderGoodsNumber);
+				orderSup.setOrderTotalAcount(moneySum);
+				orderSup.setAddId(addrId);
+				Integer userId = userServiceImpl.findUserIdByUniondId(unionId);
+				orderSup.setUserId(userId);
+				orderSup.setOrderTime(DateTimeGenerator.getDateTime());
+				orderSup.setOrderIsvalid(OrderSupStatus.InAva.getCode());
+				orderSup.setOrderIspay(OrderSupStatus.NoPay.getCode());
+				Integer orderSupId = orderBaseServiceImpl.saveSupOrderToGetId(orderSup);
+				if(orderSupId == null) {
+					LogUtil.out(classname, "commitOrderByWx", "重新保存未支付主订单失败-->orderBaseServiceImpl.saveSupOrderNoPay(unionId, moneySum, addrId);");
+					return OpState.ERROR;
+				}
+				//2.更新子订单状态(设置关联的主订单Id为当前重新生成的主订单Id)
+				Boolean isOk = orderGoodsServiceImpl.updateSubOrderForOId(orderSupId, orderGoodsNumber);
+				if(isOk == false) {
+					LogUtil.out(classname, "commitOrderByWx", "重新更新子订单失败-->orderGoodsServiceImpl.updateSubOrderForOId(orderSupId, orderGoodsNumber);");
+					return OpState.ERROR;
+				}
 			}
-			//生成未支付主订单下的子订单
-			int numOrderGoods = orderGoodsServiceImpl.saveOrderSub(orderSubs, orderSup);
-			if(numOrderGoods != orderSubs.size()) {
-				LogUtil.out(classname, "coommitOrder", "保存未支付子订单失败-->int numOrderGoods = orderGoodsServiceImpl.saveOrderSub(orderSubs, orderSup);");
-				return OpState.ERROR;
-			}
-			//调用微信支付接口,发起微信支付统一下单
+			//8.调用微信支付接口,发起微信支付统一下单
 			Json result = PayUtil.wxPay(openId, orderSup.getOrderNumber(), moneySum);
 			if(result.isSuccess()==false) {
+				
+				LogUtil.out(classname, "commitOrderByWx", "调用微信支付接口失败-->PayUtil.wxPay(openId, orderSup.getOrderNumber(), moneySum);");
+
 				return OpState.ERROR;
 			}
 			return result;
 			
+			
+			
 		}catch(Exception e) {
-			LogUtil.out(classname, "coommitOrder", "exception-->"+e.toString());
+			LogUtil.out(classname, "commitOrderByWx", "exception-->"+e.toString());
 			return OpState.ERROR;
 		}
 	}

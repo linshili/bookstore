@@ -40,25 +40,25 @@ public class Address {
 		return addUserName;
 	}
 	public void setAddUserName(String addUserName) {
-		this.addUserName = addUserName;
+		this.addUserName = addUserName == null ? null : addUserName.trim();
 	}
 	public String getAddPostalCode() {
 		return addPostalCode;
 	}
 	public void setAddPostalCode(String addPostalCode) {
-		this.addPostalCode = addPostalCode;
+		this.addPostalCode = addPostalCode == null ? null : addPostalCode.trim();
 	}
 	public String getAddCounty() {
 		return addCounty;
 	}
 	public void setAddCounty(String addCounty) {
-		this.addCounty = addCounty;
+		this.addCounty = addCounty == null ? null : addCounty.trim();
 	}
 	public String getAddProvince() {
 		return addProvince;
 	}
 	public void setAddProvince(String addProvince) {
-		this.addProvince = addProvince;
+		this.addProvince = addProvince == null ? null : addProvince.trim();
 	}
 	public String getAddCity() {
 		return addCity;
@@ -70,19 +70,19 @@ public class Address {
 		return addDetailInfo;
 	}
 	public void setAddDetailInfo(String addDetailInfo) {
-		this.addDetailInfo = addDetailInfo;
+		this.addDetailInfo = addDetailInfo == null ? null : addDetailInfo.trim();
 	}
 	public String getAddNationalCode() {
 		return addNationalCode;
 	}
 	public void setAddNationalCode(String addNationalCode) {
-		this.addNationalCode = addNationalCode;
+		this.addNationalCode = addNationalCode == null ? null : addNationalCode.trim();
 	}
 	public String getAddTele() {
 		return addTele;
 	}
 	public void setAddTele(String addTele) {
-		this.addTele = addTele;
+		this.addTele = addTele == null ? null : addTele.trim();
 	}
 	public Boolean getAddDefault() {
 		return addDefault;

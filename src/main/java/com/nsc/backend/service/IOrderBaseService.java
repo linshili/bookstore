@@ -23,7 +23,7 @@ public interface IOrderBaseService {
 	 * @param orderSup 主订单实例
 	 * @return true/false(成功/失败)
 	 */
-	String saveSupOrderNoPay(OrderSup orderSup);
+	Boolean saveSupOrderNoPay(OrderSup orderSup);
 	
 	/**
 	 * 保存未支付主订单记录
@@ -34,8 +34,31 @@ public interface IOrderBaseService {
 	 */
 	OrderSup saveSupOrderNoPay(String unionId,BigDecimal moneySum,Integer addrId);
 	
-	//通过订单编号更新
-	void updateOrderBase(String orderNumber,String payTime,String tMerchantnumber,String orderNote);
+
+    /**
+     * 保存未支付主订单记录
+     * @param orderSup 主订单实例
+     * @return 主订单记录Id
+     */
+    Integer saveSupOrderToGetId(OrderSup orderSup);
+	
+    /**
+     * 根据主订单编号查找主订单Id
+     * @param supOrderNumber 主订单编号
+     * @return 主订单Id
+     */
+    Integer getSupOrderId(String supOrderNumber);
+    
+	
+	/**
+	 * 通过主订单编号更新主订单
+	 * @param orderNumber
+	 * @param payTime
+	 * @param tMerchantnumber
+	 * @param orderNote
+	 */
+	void updateOrderBaseByWx(String orderNumber,String payTime,String tMerchantnumber,String orderNote);
+	
 	//通过主订单编号查找订单总金额 
 	OrderBase findtotalAcount(String orderNumber);
 	
@@ -58,6 +81,10 @@ public interface IOrderBaseService {
     
     //获取主订单
     OrderBase getOrderBase(String baseNumber);
+    
+
+    
+    
     //设置该订单为无效
     void setIsValid(String orderNumber);
     //通过openId查找所有主订单

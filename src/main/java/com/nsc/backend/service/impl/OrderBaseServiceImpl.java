@@ -39,12 +39,13 @@ public class OrderBaseServiceImpl implements IOrderBaseService{
 		return orderbaseMapper.saveOrderBase(orderbase);
 		
 	}
-	//通过订单编号更新主订单
-	public void updateOrderBase(String orderNumber,String payTime,String tMerchantnumber,String orderNote) {
+	
+	@Override
+	public void updateOrderBaseByWx(String orderNumber,String payTime,String tMerchantnumber,String orderNote) {
 		LogUtil.out(classname, "updateOrderBase", "orderNumber--"+orderNumber+"--payTime--"+payTime+"--微信支付交易号--"+tMerchantnumber);
 		try {
 			//orderbaseMapper.updateOrderBase(orderNumber, payTime, tMerchantnumber);
-		    orderSupMapper.updateOrderBasePayTime(orderNumber, payTime, tMerchantnumber,orderNote);
+		    orderSupMapper.updateOrderBaseWxPayTime(orderNumber, payTime, tMerchantnumber,orderNote);
 			
 		}catch(Exception e){
 			LogUtil.out(classname, "updateOrderBase", "exception--设置支付完成时间失败--"+e.toString());
@@ -93,6 +94,12 @@ public class OrderBaseServiceImpl implements IOrderBaseService{
     	return OpState.ERROR;
     }
     
+    //设置该订单为无效
+    public void setIsValid(String orderNumber) {
+    	orderbaseMapper.setIsValid(orderNumber);
+    	
+    }
+    
     //获取主订单
     public OrderBase getOrderBase(String baseNumber) {
     	
@@ -100,11 +107,18 @@ public class OrderBaseServiceImpl implements IOrderBaseService{
     	orderbase = orderbaseMapper.getOrderBase(baseNumber);
     	return orderbase;
     }
-    //设置该订单为无效
-    public void setIsValid(String orderNumber) {
-    	orderbaseMapper.setIsValid(orderNumber);
-    	
-    }
+    
+    @Override
+	public Integer getSupOrderId(String supOrderNumber) {
+		
+		Integer id =  orderSupMapper.selectByNum(supOrderNumber);
+		if(id != null) {
+			return id;
+		}
+		return null;
+	}
+    
+    
     //通过openId查找所有主订单
     public List<OrderBase> findOrderBaseByOpenId(Integer userId) {
     	List<OrderBase> list = orderbaseMapper.findOrderBaseByOpenId(userId);
@@ -117,11 +131,16 @@ public class OrderBaseServiceImpl implements IOrderBaseService{
     }
     
 	@Override
-	public String saveSupOrderNoPay(OrderSup orderSup) {
+	public Boolean saveSupOrderNoPay(OrderSup orderSup) {
 		
+		Integer res = orderSupMapper.insertSelective(orderSup);
+		if(res != null ) {
+			return OpState.OK;
+		}
 		
-		return null;
+		return OpState.ERROR;
 	}
+	
 	@Override
 	public OrderSup saveSupOrderNoPay(String unionId, BigDecimal moneySum, Integer addrId) {
 		
@@ -133,18 +152,17 @@ public class OrderBaseServiceImpl implements IOrderBaseService{
 			orderSup.setOrderTotalAcount( moneySum );
 			orderSup.setAddId(addrId);
 			
-			//订单编号
+			//1.主订单编号
 			orderSup.setOrderNumber(OrderUtil.getOrderNum(userId));
-			//订单生成时间
+			//2.订单生成时间
 			orderSup.setOrderTime(DateTimeGenerator.getDateTime());
-			//订单未支付
+			//3.订单未支付
 			orderSup.setOrderIspay(0);
-			//预设订单总金额有误
-			orderSup.setOrderIsequal(0);
-			//订单有效
-			orderSup.setOrderIsvalid(1);
-			//订单支付方式为微信支付
-			orderSup.setTradeTableMethod(1);
+			//4.主订单无效(只有一次性完成支付时才视作有效)
+			orderSup.setOrderIsvalid(0);
+			//5.String unionId 用户Id
+			//6.BigDecimal moneySum 主订单总金额
+			//7.Integer addrId 收货地址Id
 			
 			int res = orderSupMapper.insertSelective(orderSup);
 			if(res == 1) {
@@ -157,5 +175,23 @@ public class OrderBaseServiceImpl implements IOrderBaseService{
 		}
 		return null;
 	}
+
+	@Override
+	public Integer saveSupOrderToGetId(OrderSup orderSup) {
+		
+		try {
+			Integer supOrderId = orderSupMapper.insertSelective(orderSup);
+			if(supOrderId != null) {
+				return orderSup.getOrderId();
+			}
+		}catch(Exception e) {
+			LogUtil.out(classname, "saveSupOrderToGetId", "生成主订单失败--exception-->"+e.toString());
+		}
+		return null;
+	}
+	
+	
+
+
 	
 }

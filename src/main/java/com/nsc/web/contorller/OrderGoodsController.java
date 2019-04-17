@@ -1,5 +1,6 @@
 package com.nsc.web.contorller;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,12 +20,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.nsc.backend.entity.Address;
+import com.nsc.backend.entity.AddressExample;
+import com.nsc.backend.entity.AddressExample.Criteria;
 import com.nsc.backend.entity.Book;
 import com.nsc.backend.entity.OrderBase;
 import com.nsc.backend.entity.OrderGoods;
+import com.nsc.backend.entity.OrderSub;
+import com.nsc.backend.entity.OrderSubGoods;
+import com.nsc.backend.entity.OrderSup;
+import com.nsc.backend.entity.OrderSupStatus;
 import com.nsc.backend.entity.Store;
 import com.nsc.backend.entity.User;
 import com.nsc.backend.service.IAddressService;
@@ -34,14 +43,20 @@ import com.nsc.backend.service.IOrderBaseService;
 import com.nsc.backend.service.IOrderGoodsService;
 import com.nsc.backend.service.IStoreService;
 import com.nsc.backend.service.IUserService;
+import com.nsc.web.util.DateTimeGenerator;
+import com.nsc.web.util.LogUtil;
 import com.nsc.web.util.OrderUtil;
 import com.nsc.web.util.ROrderGoods;
 import com.nsc.web.util.backstate.BackState;
+import com.nsc.web.util.backstate.OpState;
+import com.nsc.web.util.weixin.PayUtil;
 import com.nsc.web.vo.Json;
 
 @Controller
 @RequestMapping("OrderGoods")
 public class OrderGoodsController {
+	
+	public final static String classname = "OrderGoodsController";
 	
 	@Autowired
 	IBookService bookServiceImpl;
@@ -232,76 +247,6 @@ public class OrderGoodsController {
 		}
 		return states;
 	}
-	
-	/**
-	 * 
-	 * 待付款页面支付接口
-	 * 
-	 * @param orderNo
-	 * @return
-	 */
-	@RequestMapping("sliptOrder")
-	@ResponseBody
-	public Map<String,String>sliptOrder(@RequestBody String Orderparam){
-		
-		String p="{\"baseNumber\":\"sdfsddfsdf\","
-				+ "\"gNumberList\":[{\"goodsNumber\":\"65454313\"},"
-				+ "{\"goodsNumber\":\"987651321\"},"
-				+ "{\"goodsNumber\":\"3151355\"}]}";
-		
-		JSONObject json = JSONObject.parseObject(Orderparam);
-		String baseNumber = json.getString("baseNumber");
-		JSONArray gNumberList = json.getJSONArray("gNumberList");
-		
-		Map<String, String> map = new HashMap<String, String>();
-		
-		//查看主订单对应子订单的数量，如是1，则不需要拆分，若是大于1，拆分
-		if(gNumberList.size()>1) {
-
-			//获取原主订单
-			OrderBase orderbaseOld = orderBaseServiceImpl.getOrderBase(baseNumber);
-			System.out.println(orderbaseOld.getAddress().toString());
-			for(int i=0;i<gNumberList.size();i++) {
-				
-				JSONObject jsonobject = gNumberList.getJSONObject(i);
-				String goodsNumber = jsonobject.getString("goodsNumber");
-				
-				OrderBase orderbase = new OrderBase();
-				orderbase.setOrderNumber(OrderUtil.getOrderNum(0));
-				orderbase.setOrderTime(orderbaseOld.getOrderTime());
-				orderbase.setOrderTotalacount(orderbaseOld.getOrderTotalacount());
-				orderbase.setUser(orderbaseOld.getUser());
-				orderbase.setTradetableMethod(1);
-				orderbase.setAddress(orderbaseOld.getAddress());
-				orderBaseServiceImpl.saveOrderbase(orderbase);
-				
-				//若主订单生成异常，则则重新生成，
-				int n=0;
-				while(orderbase.getOrderId()==null&&n<5) {
-					orderbase.setOrderNumber(OrderUtil.getOrderNum(0));
-					orderBaseServiceImpl.saveOrderbase(orderbase);
-					n++;
-				}
-				
-				//更新子订单信息
-				orderGoodsServiceImpl.updateOrderNumberId(goodsNumber, orderbase.getOrderId(), orderbase.getOrderNumber());
-				//设置原主订单信息为无效
-				orderBaseServiceImpl.setIsValid(baseNumber);
-				map.put(orderbase.getOrderNumber(), goodsNumber);
-				
-			}
-			return map;
-		}else {
-			for(int i=0;i<gNumberList.size();i++) {
-				JSONObject jsonobject1 = gNumberList.getJSONObject(i);
-				String goodsNumber = jsonobject1.getString("goodsNumber");
-				map.put(baseNumber,goodsNumber);
-			}
-			
-			return map;
-		}
-	}
-	
 
 	
 	/**
@@ -381,71 +326,106 @@ public class OrderGoodsController {
 			return listr ;
 			}
     	
-    	
-    	
-    	
 	}
 	
 	/**
-	 * 根据用户的openId，将此用户所有已支付/未支付订单的信息返回到前台
-	 * @param openId
-	 * @return
+	 * 根据用户的unionId，将此用户所有未支付订单的信息返回到前台
+	 * @param unionId
+	 * @return 
 	 */
-	@RequestMapping(value= "showOrderGoodsByIspay",method= RequestMethod.POST)
-	public @ResponseBody List<ROrderGoods> showOrderGoodsByIspay(@RequestBody String openId){
-		//根据用户id将此用户的购物信息，查找出来
-				System.out.println(openId);
-				JSONObject json = JSONObject.parseObject(openId);
-				openId = json.getString("openId");
-				Integer state = json.getInteger("state");
-				User user = userServiceImpl.findUserByopenId(openId);
-		    	List<OrderBase> listb = orderBaseServiceImpl.findOrderBaseByIspay(user.getUserId(),state);
-		    	
-		    	List<OrderGoods> list = orderGoodsServiceImpl.showOrderGoodsByIspay(listb, state);
-		    	List<ROrderGoods> listr = new ArrayList<ROrderGoods>();
-		    	System.out.println("list=="+list.size());
-		    	System.out.println("listb=="+listb.size());
-		    	for(int i=0;i<list.size();i++) {
-		    		for(int j=0;j<listb.size();j++) {
-		    			if(list.get(i).getOrderBase().getOrderId()==listb.get(j).getOrderId()) {
-				    		ROrderGoods rordergoods = new ROrderGoods();
-				    		rordergoods.setOrdergoodsId(list.get(i).getOrdergoodsId());
-				    		rordergoods.setOrderNumber(list.get(i).getOrderNumber());
-				    		rordergoods.setOrdergoodsNumber(list.get(i).getOrdergoodsNumber());
-				    		rordergoods.setOrderState(list.get(i).getOrderState());
-				    		rordergoods.setOrdergoodsCount(list.get(i).getOrdergoodsCount());
-				    		rordergoods.setInvoice(list.get(i).getInvoice());
-				    		rordergoods.setOrdergoodsIsreturngoods(list.get(i).getOrdergoodsIsreturngoods());
-				    		rordergoods.setOrdergoodsTotalprice(list.get(i).getOrdergoodsTotalprice());
-				    		rordergoods.setOrderreturnStatus(list.get(i).getOrderreturnStatus());
-				    		rordergoods.setOrderreturnReason(list.get(i).getOrderreturnReason());
-				    		rordergoods.setOrderTime(listb.get(j).getOrderTime());
-				    		rordergoods.setTradetableNumber(listb.get(j).getTradetableNumber());
-				    		rordergoods.setOrderPaytime(listb.get(j).getOrderPaytime());
-				    		rordergoods.setAddress(listb.get(j).getAddress());
-				    		rordergoods.setBook(list.get(i).getBook());
-				    		rordergoods.setStore(list.get(i).getStore());
-				    		
-				    		listr.add(rordergoods);
-		    			}
-			    		
-		    		}
-		    	}
-		    	
-		    	Collections.sort(listr, new Comparator<ROrderGoods>() {
-		            @Override
-		            public int compare(ROrderGoods o1, ROrderGoods o2) {
-		                //降序
-		            	int n;
-		            		n=o2.getOrderTime().compareTo(o1.getOrderTime());
-		            		
-		                return n;
-		            }
-		        });
-		    	
-				return listr ;
+	@RequestMapping("/getPending")
+	@ResponseBody 
+	public Object getPending(@RequestBody String info){
+		
+		JSONObject jsonObj = JSON.parseObject(info);
+		String unionId = (String)jsonObj.get("unionId");
+		Integer index = (Integer)jsonObj.get("index");
+		
+		List<OrderSubGoods> orderSubGoods = null;
+		try {
+			orderSubGoods = orderGoodsServiceImpl.getPendingPay(unionId, index);
+			return orderSubGoods;
+		}catch(Exception e) {
+			
+			LogUtil.out(classname, "getPending--", "exception--"+e.toString());
+			return OpState.ERROR;
+		}
+		
 	}
 	
+	@RequestMapping(value= "commitSubOrderByWx",method= RequestMethod.POST)
+	@ResponseBody
+	public Object commitSubOrderByWx(@RequestBody String subOrderInfo) {
+		
+		try {
+			JSONObject jsonObj = JSONObject.parseObject(subOrderInfo);
+			System.out.println(jsonObj);
+			//1.获取用户唯一Id
+			String unionId = jsonObj.getString("unionId");
+			//2.获取微信用户的openId，用作微信支付接口的参数
+			String openId = jsonObj.getString("openId");
+			BigDecimal moneySum = jsonObj.getBigDecimal("moneySum");
+			//3.获取收货地址
+			JSONObject addrJson = jsonObj.getJSONObject("addr");
+			Address address = JSON.parseObject(addrJson.toJSONString(), new TypeReference<Address>() {});
+			Integer addrId = address.getAddId();
+			//4.获取商品
+			JSONArray list = jsonObj.getJSONArray("orderGoods");
+			OrderSub orderSub = JSON.parseObject(list.toJSONString(), new TypeReference< OrderSub >(){} );
+			
+			if( addrId == null) {
+				//5.保存用户的收货通讯地址
+				Integer id = addressServiceImpl.saveWeiAdd(address);
+				if(id == null) {
+					LogUtil.out(classname, "coommitSubOrder", "保存地址失败-->boolean isOk = addressServiceImpl.saveWeiAdd(address);");
+					return OpState.ERROR;
+				}
+			}
+			String subOrderNum = orderSub.getOrdergoodsNumber();
+			Integer supOrderId = orderBaseServiceImpl.getSupOrderId( subOrderNum );
+			if( supOrderId == null ) {
+				//根据子订单生成新的主订单(即将生成的主订单将会和子订单的编号一致)
+				OrderSup orderSup = new OrderSup();
+				orderSup.setOrderTime(DateTimeGenerator.getDateTime());
+				orderSup.setOrderNumber( subOrderNum );
+				orderSup.setOrderTotalAcount(moneySum);
+				orderSup.setAddId(addrId);
+				orderSup.setOrderIsvalid(OrderSupStatus.InAva.getCode());
+				orderSup.setOrderIspay(OrderSupStatus.NoPay.getCode());
+				Integer userId = userServiceImpl.findUserIdByUniondId(unionId);
+				if(userId != null ) {
+					orderSup.setUserId(userId);
+				}else {
+					LogUtil.out(classname, "coommitSubOrder", "没有找到匹配的用户--");
+					return OpState.ERROR;
+				}
+				
+				supOrderId = orderBaseServiceImpl.saveSupOrderToGetId(orderSup);
+				if(supOrderId == null) {
+					LogUtil.out(classname, "coommitSubOrder", "保存主订单失败--");
+					return OpState.ERROR;
+				}
+				//更新子订单的关联主订单Id
+				boolean isOk = orderGoodsServiceImpl.updateSubOrderForOId(supOrderId, subOrderNum);
+			
+				if(isOk != true) {
+					LogUtil.out(classname, "coommitSubOrder", "更新子订单中主订单Id失败--");
+					return OpState.ERROR;
+				}
+			}
+			//6.调用微信支付接口,发起微信支付统一下单
+			Json result = PayUtil.wxPay(openId, orderSub.getOrdergoodsNumber(), moneySum);
+			if(result.isSuccess()==false) {
+				return OpState.ERROR;
+			}
+			return result;
+			
+		}catch(Exception e) {
+			LogUtil.out(classname, "commitSubOrder", "exception-->"+e.toString());
+		}
+		
+		return OpState.ERROR;
+	}
 	
 	/**
 	 * 逻辑删除子订单

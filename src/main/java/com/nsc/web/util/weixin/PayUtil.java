@@ -294,7 +294,7 @@ public class PayUtil {
 	 *            微信用户openId
 	 * @param orderNo
 	 *            商户订单编号
-	 * @param paymoney
+	 * @param paymoneySum
 	 *            订单总金额
 	 * @return 预支付结果
 	 */

@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.nsc.backend.entity.OrderSub;
 import com.nsc.backend.entity.OrderSubExample;
+import com.nsc.backend.entity.OrderSubGoods;
 
 public interface OrderSubMapper {
     long countByExample(OrderSubExample example);
@@ -29,5 +30,13 @@ public interface OrderSubMapper {
 
     int updateByPrimaryKey(OrderSub record);
     
+    /**
+     * 根据用户unionId查找用户订单
+     * @param unionId 用户唯一unionId
+     * @return 子订单实例数组
+     */
+    List<OrderSubGoods> selectOrderAll(String unionId);
+    
+    List<OrderSubGoods> selectOrderPendingPay(@Param("unionId") String unionId,@Param("index") Integer index);
     
 }
