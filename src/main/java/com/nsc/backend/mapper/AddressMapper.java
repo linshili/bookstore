@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.nsc.backend.entity.Address;
+import com.nsc.backend.entity.AddressExample;
 
 //地址mapper映射接口
 public interface AddressMapper {
@@ -20,6 +21,13 @@ public interface AddressMapper {
 	Address findAddressById(Integer addId);
 	//通过addr的id和用户的userId查找address
 	Address findAddressByIdAndUserId( @Param("addId") Integer addId,@Param("userId") Integer userId);
+	
+	/**
+	 * 根据AddressExample查找 地址记录
+	 * @param example AddressExample
+	 * @return 地址实例数组
+	 */
+	List<Address> selectByExample(AddressExample example);
 	
 	
 	

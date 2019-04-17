@@ -3,7 +3,7 @@ package com.nsc.backend.entity;
 public enum OrderSubStatus {
 
 
-	    Pending(0),Paid(1),Cancel(2),ReturnGoods(3),Invalid(4);
+	    Pending(0),Delivering(1),Transporting(2),Received(3),AfterServicing(4),Invalid(5);
 	
 	    private int code;
 	    

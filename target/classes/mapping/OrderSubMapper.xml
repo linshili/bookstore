@@ -2,334 +2,506 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nsc.backend.mapper.OrderSubMapper">
 
-  <resultMap id="BaseResultMap" type="com.nsc.backend.entity.OrderSub">
-    <id column="orderGoods_id" jdbcType="INTEGER" property="orderGoodsId" />
-    <result column="order_id" jdbcType="INTEGER" property="orderId" />
-    <result column="ordergoods_number" jdbcType="VARCHAR" property="ordergoodsNumber" />
-    <result column="order_state" jdbcType="TINYINT" property="orderState" />
-    <result column="orderGoods_count" jdbcType="INTEGER" property="orderGoodsCount" />
-    <result column="invoice" jdbcType="TINYINT" property="invoice" />
-    <result column="orderGoods_IsReturnGoods" jdbcType="INTEGER" property="orderGoodsIsReturnGoods" />
-    <result column="orderGoods_TotalPrice" jdbcType="DECIMAL" property="orderGoodsTotalPrice" />
-    <result column="book_id" jdbcType="INTEGER" property="bookId" />
-    <result column="store_id" jdbcType="INTEGER" property="storeId" />
-    <result column="orderReturn_status" jdbcType="INTEGER" property="orderReturnStatus" />
-    <result column="orderReturn_Reason" jdbcType="VARCHAR" property="orderReturnReason" />
-    
-  </resultMap>
-  
-  
-  <sql id="Example_Where_Clause">
-    <where>
-      <foreach collection="oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Update_By_Example_Where_Clause">
-    <where>
-      <foreach collection="example.oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Base_Column_List">
-    orderGoods_id, order_id, ordergoods_number, order_state, orderGoods_count, invoice, 
-    orderGoods_IsReturnGoods, orderGoods_TotalPrice, book_id, store_id, orderReturn_status, 
-    orderReturn_Reason
-  </sql>
-  <select id="selectByExample" parameterType="com.nsc.backend.entity.OrderSubExample" resultMap="BaseResultMap">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    from order_goods
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from order_goods
-    where orderGoods_id = #{orderGoodsId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from order_goods
-    where orderGoods_id = #{orderGoodsId,jdbcType=INTEGER}
-  </delete>
-  <delete id="deleteByExample" parameterType="com.nsc.backend.entity.OrderSubExample">
-    delete from order_goods
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
-  <insert id="insert" parameterType="com.nsc.backend.entity.OrderSub">
-    insert into order_goods (orderGoods_id, order_id, ordergoods_number, 
-      order_state, orderGoods_count, invoice, 
-      orderGoods_IsReturnGoods, orderGoods_TotalPrice, 
-      book_id, store_id, orderReturn_status, 
-      orderReturn_Reason)
-    values (#{orderGoodsId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{ordergoodsNumber,jdbcType=VARCHAR}, 
-      #{orderState,jdbcType=TINYINT}, #{orderGoodsCount,jdbcType=INTEGER}, #{invoice,jdbcType=TINYINT}, 
-      #{orderGoodsIsReturnGoods,jdbcType=INTEGER}, #{orderGoodsTotalPrice,jdbcType=DECIMAL}, 
-      #{bookId,jdbcType=INTEGER}, #{storeId,jdbcType=INTEGER}, #{orderReturnStatus,jdbcType=INTEGER}, 
-      #{orderReturnReason,jdbcType=VARCHAR} )
-  </insert>
-  <insert id="insertSelective" parameterType="com.nsc.backend.entity.OrderSub">
-    insert into order_goods
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="orderGoodsId != null">
-        orderGoods_id,
-      </if>
-      <if test="orderId != null">
-        order_id,
-      </if>
-      <if test="ordergoodsNumber != null">
-        ordergoods_number,
-      </if>
-      <if test="orderState != null">
-        order_state,
-      </if>
-      <if test="orderGoodsCount != null">
-        orderGoods_count,
-      </if>
-      <if test="invoice != null">
-        invoice,
-      </if>
-      <if test="orderGoodsIsReturnGoods != null">
-        orderGoods_IsReturnGoods,
-      </if>
-      <if test="orderGoodsTotalPrice != null">
-        orderGoods_TotalPrice,
-      </if>
-      <if test="bookId != null">
-        book_id,
-      </if>
-      <if test="storeId != null">
-        store_id,
-      </if>
-      <if test="orderReturnStatus != null">
-        orderReturn_status,
-      </if>
-      <if test="orderReturnReason != null">
-        orderReturn_Reason,
-      </if>
-      
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="orderGoodsId != null">
-        #{orderGoodsId,jdbcType=INTEGER},
-      </if>
-      <if test="orderId != null">
-        #{orderId,jdbcType=INTEGER},
-      </if>
-      <if test="ordergoodsNumber != null">
-        #{ordergoodsNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="orderState != null">
-        #{orderState,jdbcType=TINYINT},
-      </if>
-      <if test="orderGoodsCount != null">
-        #{orderGoodsCount,jdbcType=INTEGER},
-      </if>
-      <if test="invoice != null">
-        #{invoice,jdbcType=TINYINT},
-      </if>
-      <if test="orderGoodsIsReturnGoods != null">
-        #{orderGoodsIsReturnGoods,jdbcType=INTEGER},
-      </if>
-      <if test="orderGoodsTotalPrice != null">
-        #{orderGoodsTotalPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="bookId != null">
-        #{bookId,jdbcType=INTEGER},
-      </if>
-      <if test="storeId != null">
-        #{storeId,jdbcType=INTEGER},
-      </if>
-      <if test="orderReturnStatus != null">
-        #{orderReturnStatus,jdbcType=INTEGER},
-      </if>
-      <if test="orderReturnReason != null">
-        #{orderReturnReason,jdbcType=VARCHAR},
-      </if>
-      
-    </trim>
-  </insert>
-  <select id="countByExample" parameterType="com.nsc.backend.entity.OrderSubExample" resultType="java.lang.Long">
-    select count(*) from order_goods
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-  <update id="updateByExampleSelective" parameterType="map">
-    update order_goods
-    <set>
-      <if test="record.orderGoodsId != null">
-        orderGoods_id = #{record.orderGoodsId,jdbcType=INTEGER},
-      </if>
-      <if test="record.orderId != null">
-        order_id = #{record.orderId,jdbcType=INTEGER},
-      </if>
-      <if test="record.ordergoodsNumber != null">
-        ordergoods_number = #{record.ordergoodsNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="record.orderState != null">
-        order_state = #{record.orderState,jdbcType=TINYINT},
-      </if>
-      <if test="record.orderGoodsCount != null">
-        orderGoods_count = #{record.orderGoodsCount,jdbcType=INTEGER},
-      </if>
-      <if test="record.invoice != null">
-        invoice = #{record.invoice,jdbcType=TINYINT},
-      </if>
-      <if test="record.orderGoodsIsReturnGoods != null">
-        orderGoods_IsReturnGoods = #{record.orderGoodsIsReturnGoods,jdbcType=INTEGER},
-      </if>
-      <if test="record.orderGoodsTotalPrice != null">
-        orderGoods_TotalPrice = #{record.orderGoodsTotalPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="record.bookId != null">
-        book_id = #{record.bookId,jdbcType=INTEGER},
-      </if>
-      <if test="record.storeId != null">
-        store_id = #{record.storeId,jdbcType=INTEGER},
-      </if>
-      <if test="record.orderReturnStatus != null">
-        orderReturn_status = #{record.orderReturnStatus,jdbcType=INTEGER},
-      </if>
-      <if test="record.orderReturnReason != null">
-        orderReturn_Reason = #{record.orderReturnReason,jdbcType=VARCHAR},
-      </if>
-      
-    </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    update order_goods
-    set orderGoods_id = #{record.orderGoodsId,jdbcType=INTEGER},
-      order_id = #{record.orderId,jdbcType=INTEGER},
-      ordergoods_number = #{record.ordergoodsNumber,jdbcType=VARCHAR},
-      order_state = #{record.orderState,jdbcType=TINYINT},
-      orderGoods_count = #{record.orderGoodsCount,jdbcType=INTEGER},
-      invoice = #{record.invoice,jdbcType=TINYINT},
-      orderGoods_IsReturnGoods = #{record.orderGoodsIsReturnGoods,jdbcType=INTEGER},
-      orderGoods_TotalPrice = #{record.orderGoodsTotalPrice,jdbcType=DECIMAL},
-      book_id = #{record.bookId,jdbcType=INTEGER},
-      store_id = #{record.storeId,jdbcType=INTEGER},
-      orderReturn_status = #{record.orderReturnStatus,jdbcType=INTEGER},
-      orderReturn_Reason = #{record.orderReturnReason,jdbcType=VARCHAR}
-     
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nsc.backend.entity.OrderSub">
-    update order_goods
-    <set>
-      <if test="orderId != null">
-        order_id = #{orderId,jdbcType=INTEGER},
-      </if>
-      <if test="ordergoodsNumber != null">
-        ordergoods_number = #{ordergoodsNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="orderState != null">
-        order_state = #{orderState,jdbcType=TINYINT},
-      </if>
-      <if test="orderGoodsCount != null">
-        orderGoods_count = #{orderGoodsCount,jdbcType=INTEGER},
-      </if>
-      <if test="invoice != null">
-        invoice = #{invoice,jdbcType=TINYINT},
-      </if>
-      <if test="orderGoodsIsReturnGoods != null">
-        orderGoods_IsReturnGoods = #{orderGoodsIsReturnGoods,jdbcType=INTEGER},
-      </if>
-      <if test="orderGoodsTotalPrice != null">
-        orderGoods_TotalPrice = #{orderGoodsTotalPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="bookId != null">
-        book_id = #{bookId,jdbcType=INTEGER},
-      </if>
-      <if test="storeId != null">
-        store_id = #{storeId,jdbcType=INTEGER},
-      </if>
-      <if test="orderReturnStatus != null">
-        orderReturn_status = #{orderReturnStatus,jdbcType=INTEGER},
-      </if>
-      <if test="orderReturnReason != null">
-        orderReturn_Reason = #{orderReturnReason,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where orderGoods_id = #{orderGoodsId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.nsc.backend.entity.OrderSub">
-    update order_goods
-    set order_id = #{orderId,jdbcType=INTEGER},
-      ordergoods_number = #{ordergoodsNumber,jdbcType=VARCHAR},
-      order_state = #{orderState,jdbcType=TINYINT},
-      orderGoods_count = #{orderGoodsCount,jdbcType=INTEGER},
-      invoice = #{invoice,jdbcType=TINYINT},
-      orderGoods_IsReturnGoods = #{orderGoodsIsReturnGoods,jdbcType=INTEGER},
-      orderGoods_TotalPrice = #{orderGoodsTotalPrice,jdbcType=DECIMAL},
-      book_id = #{bookId,jdbcType=INTEGER},
-      store_id = #{storeId,jdbcType=INTEGER},
-      orderReturn_status = #{orderReturnStatus,jdbcType=INTEGER},
-      orderReturn_Reason = #{orderReturnReason,jdbcType=VARCHAR},
-    where orderGoods_id = #{orderGoodsId,jdbcType=INTEGER}
-  </update>
-  
+	<resultMap id="BaseResultMap" type="com.nsc.backend.entity.OrderSub">
+		<id column="orderGoods_id" jdbcType="INTEGER" property="orderGoodsId" />
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="ordergoods_number" jdbcType="VARCHAR" property="ordergoodsNumber" />
+		<result column="order_state" jdbcType="TINYINT" property="orderState" />
+		<result column="orderGoods_count" jdbcType="INTEGER" property="orderGoodsCount" />
+		<result column="invoice" jdbcType="TINYINT" property="invoice" />
+		<result column="orderGoods_IsReturnGoods" jdbcType="INTEGER"
+			property="orderGoodsIsReturnGoods" />
+		<result column="orderGoods_TotalPrice" jdbcType="DECIMAL"
+			property="orderGoodsTotalPrice" />
+		<result column="store_id" jdbcType="INTEGER" property="storeId" />
+		<result column="orderReturn_status" jdbcType="INTEGER"
+			property="orderReturnStatus" />
+		<result column="orderReturn_Reason" jdbcType="VARCHAR"
+			property="orderReturnReason" />
 
-  
+		<!-- 封装主订单信息 -->
+		<!-- <association property="orderSup" javaType="com.nsc.backend.entity.OrderSup"> 
+			<result column="order_number" jdbcType="VARCHAR" property="orderNumber" /> 
+			<result column="order_time" jdbcType="TIMESTAMP" property="orderTime" /> 
+			<result column="order_payTime" jdbcType="TIMESTAMP" property="orderPayTime" 
+			/> <result column="order_endTime" jdbcType="TIMESTAMP" property="orderEndTime" 
+			/> <result column="order_totalAcount" jdbcType="DECIMAL" property="orderTotalAcount" 
+			/> <result column="user_id" jdbcType="INTEGER" property="userId" /> <result 
+			column="tradeTable_method" jdbcType="INTEGER" property="tradeTableMethod" 
+			/> <result column="tradeTable_number" jdbcType="VARCHAR" property="tradeTableNumber" 
+			/> <result column="add_id" jdbcType="INTEGER" property="addId" /> <result 
+			column="order_ispay" jdbcType="INTEGER" property="orderIspay" /> <result 
+			column="order_isequal" jdbcType="INTEGER" property="orderIsequal" /> <result 
+			column="order_isvalid" jdbcType="INTEGER" property="orderIsvalid" /> <result 
+			column="order_note" jdbcType="VARCHAR" property="orderNote" /> </association> -->
+
+		<!-- 封装书籍信息 -->
+		<association property="book" javaType="com.nsc.backend.entity.Book">
+			<id column="book_id" property="bookId" />
+			<result column="book_ISBN" property="bookISBN" />
+			<result column="book_name" property="bookName" />
+			<result column="book_unitPrice" property="bookUnitPrice" />
+			<result column="book_preface" property="bookPreface" />
+			<result column="book_conBrief" property="bookConBrief" />
+			<result column="book_authorBrief" property="bookAuthorBrief" />
+			<result column="book_catalog" property="bookCatalog" />
+			<result column="book_author" property="bookAuthor" />
+			<result column="book_pubTime" property="bookPubTime" />
+			<result column="book_priTime" property="bookPriTime" />
+			<result column="book_edtion" property="bookEdtion" />
+			<result column="book_impression" property="bookImpression" />
+			<result column="book_size" property="bookSize" />
+			<result column="book_paper" property="bookPaper" />
+			<result column="book_packing" property="bookPacking" />
+			<result column="book_suit" property="bookSuit" />
+			<result column="book_imgUrl" property="bookImgUrl" />
+			<result column="book_stock" property="bookStock" />
+			<result column="book_validityPeriod" property="bookValidityPeriod" />
+			<result column="book_originalPrice" property="bookOriginalPrice" />
+			<result column="book_isDetele" property="bookIsDetele" />
+			<result column="book_keyWord1" property="bookKeyWord1" />
+			<result column="book_keyWord2" property="bookKeyWord2" />
+			<result column="book_seriesAb" property="bookSeriesAb" />
+			<result column="book_publicSort" property="bookPublicSort" />
+			<result column="book_scores" property="bookScores" />
+			<result column="book_code" property="bookCode" />
+			<result column="book_picture" property="bookPicture" />
+			<result column="book_titles" property="bookTitles" />
+			<result column="book_measurementUnit" property="bookMeasurementUnit" />
+			<result column="publish_house" property="publish_house" />
+			<result column="book_discount" property="bookDiscount" />
+			<result column="book_note" property="bookNote" />
+			<result column="order_freight" property="orderFreight" />
+			<result column="store_id" property="storeId" />
+			<result column="store_name" property="storeName" />
+
+			<!-- 作为book类外键 ,封装到book表中返回 -->
+			<association property="secondCate"
+				javaType="com.nsc.backend.entity.SecondCategory">
+				<id property="secondCateId" column="secondCate_id" />
+				<result property="secondCateName" column="secondCate_name" />
+			</association>
+
+		</association>
+
+	</resultMap>
+
+	<resultMap id="orderPendingPay" type="com.nsc.backend.entity.OrderSubGoods">
+		<id column="orderGoods_id" jdbcType="INTEGER" property="orderGoodsId" />
+		<result column="order_id" jdbcType="INTEGER" property="orderId" />
+		<result column="user_unionId" jdbcType="VARCHAR" property="unionId" />
+		<result column="ordergoods_number" jdbcType="INTEGER" property="orderGoodsNumber" />
+		<result column="orderGoods_count" jdbcType="DECIMAL" property="orderGoodsCount" />
+		<result column="orderGoods_TotalPrice" jdbcType="DECIMAL"
+			property="orderGoodsTotalPrice" />
+		<result column="store_id" jdbcType="INTEGER" property="storeId" />
+		<result column="invoice" jdbcType="TINYINT" property="invoice" />
+
+		<!-- 订单生成时间 -->
+		<result column="order_time" jdbcType="DATE" property="orderTime" />
+		<!-- 订单支付时间 -->
+		<result column="order_payTime" jdbcType="DATE" property="orderPayTime" />
+		<!-- <result column="order_isvalid" jdbcType="TINYINT" property="orderIsValid" 
+			/> -->
+		<result column="tradeTable_number" jdbcType="VARCHAR" property="tradeTableNumber" />
+		<result column="tradeTable_method" jdbcType="TINYINT" property="tradeTableMethod" />
+
+		<!-- 封装书籍信息 -->
+		<!-- <association column="book_id" property="book" javaType="com.nsc.backend.entity.Book" 
+			resultMap="com.nsc.backend.mapper.BookMapper.bookResultMap" > <result column="book_ISBN" 
+			property="bookISBN"/> </association> -->
+		<association column="book_id" property="book"
+			javaType="com.nsc.backend.entity.Book" select="com.nsc.backend.mapper.BookMapper.findBookById">
+		</association>
+		<association column="add_id" property="address"
+			javaType="com.nsc.backend.entity.Address" select="com.nsc.backend.mapper.AddressMapper.findAddressById">
+		</association>
+
+	</resultMap>
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem"
+										open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem"
+										open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		orderGoods_id, order_id, ordergoods_number, order_state,
+		orderGoods_count, invoice,
+		orderGoods_IsReturnGoods,
+		orderGoods_TotalPrice, book_id, store_id,
+		orderReturn_status,
+		orderReturn_Reason
+	</sql>
+	<select id="selectByExample" parameterType="com.nsc.backend.entity.OrderSubExample"
+		resultMap="BaseResultMap">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from order_goods
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from order_goods
+		where orderGoods_id = #{orderGoodsId,jdbcType=INTEGER}
+	</select>
+
+	<select id="countByExample" parameterType="com.nsc.backend.entity.OrderSubExample"
+		resultType="java.lang.Long">
+		select count(*) from order_goods
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+
+	<!-- 调用订单视图查询 -->
+	<select id="selectOrderAll" parameterType="java.lang.String"
+		resultMap="orderPendingPay">
+		select order_pendingpay.*
+		from order_pendingpay
+		where order_pendingpay.user_unionId = #{unionId}
+	</select>
+
+	<!-- 调用未支付订单视图查询结果 -->
+	<select id="selectOrderPendingPay" resultMap="orderPendingPay">
+		select
+		order_pendingpay.*
+		from order_pendingpay
+		where order_pendingpay.user_unionId = #{unionId}
+		limit #{index},10
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		order_goods
+		where orderGoods_id = #{orderGoodsId,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteByExample" parameterType="com.nsc.backend.entity.OrderSubExample">
+		delete from order_goods
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.nsc.backend.entity.OrderSub">
+		insert into order_goods
+		(orderGoods_id, order_id, ordergoods_number,
+		order_state,
+		orderGoods_count, invoice,
+		orderGoods_IsReturnGoods,
+		orderGoods_TotalPrice,
+		book_id, store_id, orderReturn_status,
+		orderReturn_Reason)
+		values (#{orderGoodsId,jdbcType=INTEGER},
+		#{orderId,jdbcType=INTEGER},
+		#{ordergoodsNumber,jdbcType=VARCHAR},
+		#{orderState,jdbcType=TINYINT}, #{orderGoodsCount,jdbcType=INTEGER},
+		#{invoice,jdbcType=TINYINT},
+		#{orderGoodsIsReturnGoods,jdbcType=INTEGER},
+		#{orderGoodsTotalPrice,jdbcType=DECIMAL},
+		#{bookId,jdbcType=INTEGER},
+		#{storeId,jdbcType=INTEGER}, #{orderReturnStatus,jdbcType=INTEGER},
+		#{orderReturnReason,jdbcType=VARCHAR} )
+	</insert>
+	<insert id="insertSelective" parameterType="com.nsc.backend.entity.OrderSub">
+		insert into order_goods
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="orderGoodsId != null">
+				orderGoods_id,
+			</if>
+			<if test="orderId != null">
+				order_id,
+			</if>
+			<if test="ordergoodsNumber != null">
+				ordergoods_number,
+			</if>
+			<if test="orderState != null">
+				order_state,
+			</if>
+			<if test="orderGoodsCount != null">
+				orderGoods_count,
+			</if>
+			<if test="invoice != null">
+				invoice,
+			</if>
+			<if test="orderGoodsIsReturnGoods != null">
+				orderGoods_IsReturnGoods,
+			</if>
+			<if test="orderGoodsTotalPrice != null">
+				orderGoods_TotalPrice,
+			</if>
+			<if test="bookId != null">
+				book_id,
+			</if>
+			<if test="storeId != null">
+				store_id,
+			</if>
+			<if test="orderReturnStatus != null">
+				orderReturn_status,
+			</if>
+			<if test="orderReturnReason != null">
+				orderReturn_Reason,
+			</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="orderGoodsId != null">
+				#{orderGoodsId,jdbcType=INTEGER},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=INTEGER},
+			</if>
+			<if test="ordergoodsNumber != null">
+				#{ordergoodsNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="orderState != null">
+				#{orderState,jdbcType=TINYINT},
+			</if>
+			<if test="orderGoodsCount != null">
+				#{orderGoodsCount,jdbcType=INTEGER},
+			</if>
+			<if test="invoice != null">
+				#{invoice,jdbcType=TINYINT},
+			</if>
+			<if test="orderGoodsIsReturnGoods != null">
+				#{orderGoodsIsReturnGoods,jdbcType=INTEGER},
+			</if>
+			<if test="orderGoodsTotalPrice != null">
+				#{orderGoodsTotalPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="bookId != null">
+				#{bookId,jdbcType=INTEGER},
+			</if>
+			<if test="storeId != null">
+				#{storeId,jdbcType=INTEGER},
+			</if>
+			<if test="orderReturnStatus != null">
+				#{orderReturnStatus,jdbcType=INTEGER},
+			</if>
+			<if test="orderReturnReason != null">
+				#{orderReturnReason,jdbcType=VARCHAR},
+			</if>
+
+		</trim>
+	</insert>
+
+	<update id="updateByExampleSelective" parameterType="map">
+		update order_goods
+		<set>
+			<if test="record.orderGoodsId != null">
+				orderGoods_id = #{record.orderGoodsId,jdbcType=INTEGER},
+			</if>
+			<if test="record.orderId != null">
+				order_id = #{record.orderId,jdbcType=INTEGER},
+			</if>
+			<if test="record.ordergoodsNumber != null">
+				ordergoods_number =
+				#{record.ordergoodsNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="record.orderState != null">
+				order_state = #{record.orderState,jdbcType=TINYINT},
+			</if>
+			<if test="record.orderGoodsCount != null">
+				orderGoods_count =
+				#{record.orderGoodsCount,jdbcType=INTEGER},
+			</if>
+			<if test="record.invoice != null">
+				invoice = #{record.invoice,jdbcType=TINYINT},
+			</if>
+			<if test="record.orderGoodsIsReturnGoods != null">
+				orderGoods_IsReturnGoods =
+				#{record.orderGoodsIsReturnGoods,jdbcType=INTEGER},
+			</if>
+			<if test="record.orderGoodsTotalPrice != null">
+				orderGoods_TotalPrice =
+				#{record.orderGoodsTotalPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="record.bookId != null">
+				book_id = #{record.bookId,jdbcType=INTEGER},
+			</if>
+			<if test="record.storeId != null">
+				store_id = #{record.storeId,jdbcType=INTEGER},
+			</if>
+			<if test="record.orderReturnStatus != null">
+				orderReturn_status =
+				#{record.orderReturnStatus,jdbcType=INTEGER},
+			</if>
+			<if test="record.orderReturnReason != null">
+				orderReturn_Reason =
+				#{record.orderReturnReason,jdbcType=VARCHAR},
+			</if>
+
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update order_goods
+		set orderGoods_id =
+		#{record.orderGoodsId,jdbcType=INTEGER},
+		order_id =
+		#{record.orderId,jdbcType=INTEGER},
+		ordergoods_number =
+		#{record.ordergoodsNumber,jdbcType=VARCHAR},
+		order_state =
+		#{record.orderState,jdbcType=TINYINT},
+		orderGoods_count =
+		#{record.orderGoodsCount,jdbcType=INTEGER},
+		invoice =
+		#{record.invoice,jdbcType=TINYINT},
+		orderGoods_IsReturnGoods =
+		#{record.orderGoodsIsReturnGoods,jdbcType=INTEGER},
+		orderGoods_TotalPrice =
+		#{record.orderGoodsTotalPrice,jdbcType=DECIMAL},
+		book_id =
+		#{record.bookId,jdbcType=INTEGER},
+		store_id =
+		#{record.storeId,jdbcType=INTEGER},
+		orderReturn_status =
+		#{record.orderReturnStatus,jdbcType=INTEGER},
+		orderReturn_Reason =
+		#{record.orderReturnReason,jdbcType=VARCHAR}
+
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.nsc.backend.entity.OrderSub">
+		update order_goods
+		<set>
+			<if test="orderId != null">
+				order_id = #{orderId,jdbcType=INTEGER},
+			</if>
+			<if test="ordergoodsNumber != null">
+				ordergoods_number = #{ordergoodsNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="orderState != null">
+				order_state = #{orderState,jdbcType=TINYINT},
+			</if>
+			<if test="orderGoodsCount != null">
+				orderGoods_count = #{orderGoodsCount,jdbcType=INTEGER},
+			</if>
+			<if test="invoice != null">
+				invoice = #{invoice,jdbcType=TINYINT},
+			</if>
+			<if test="orderGoodsIsReturnGoods != null">
+				orderGoods_IsReturnGoods =
+				#{orderGoodsIsReturnGoods,jdbcType=INTEGER},
+			</if>
+			<if test="orderGoodsTotalPrice != null">
+				orderGoods_TotalPrice =
+				#{orderGoodsTotalPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="bookId != null">
+				book_id = #{bookId,jdbcType=INTEGER},
+			</if>
+			<if test="storeId != null">
+				store_id = #{storeId,jdbcType=INTEGER},
+			</if>
+			<if test="orderReturnStatus != null">
+				orderReturn_status =
+				#{orderReturnStatus,jdbcType=INTEGER},
+			</if>
+			<if test="orderReturnReason != null">
+				orderReturn_Reason =
+				#{orderReturnReason,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where orderGoods_id = #{orderGoodsId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.nsc.backend.entity.OrderSub">
+		update order_goods
+		set order_id = #{orderId,jdbcType=INTEGER},
+		ordergoods_number =
+		#{ordergoodsNumber,jdbcType=VARCHAR},
+		order_state =
+		#{orderState,jdbcType=TINYINT},
+		orderGoods_count =
+		#{orderGoodsCount,jdbcType=INTEGER},
+		invoice =
+		#{invoice,jdbcType=TINYINT},
+		orderGoods_IsReturnGoods =
+		#{orderGoodsIsReturnGoods,jdbcType=INTEGER},
+		orderGoods_TotalPrice =
+		#{orderGoodsTotalPrice,jdbcType=DECIMAL},
+		book_id =
+		#{bookId,jdbcType=INTEGER},
+		store_id = #{storeId,jdbcType=INTEGER},
+		orderReturn_status = #{orderReturnStatus,jdbcType=INTEGER},
+		orderReturn_Reason = #{orderReturnReason,jdbcType=VARCHAR},
+		where
+		orderGoods_id = #{orderGoodsId,jdbcType=INTEGER}
+	</update>
+
+
 </mapper>

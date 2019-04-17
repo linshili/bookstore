@@ -2,7 +2,7 @@ package com.nsc.backend.entity;
 
 public enum OrderSupStatus {
 	
-	InAva(0),Ava(1);
+	InAva(0),Ava(1),Paid(1),NoPay(0);
 	
 	private int code;
 	OrderSupStatus(int code){
