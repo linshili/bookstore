@@ -3,34 +3,109 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-	<mapper namespace="com.nsc.backend.mapper.AddressMapper">
-		<!-- 基本的resultmap -->
-		<resultMap type="address" id="addResultMap">
-			<id column="add_id" property="addId"/>
-			<result column="add_userName" property="addUserName"/>		
-			<result column="add_postalCode" property="addPostalCode"/>		
-			<result column="add_county" property="addCounty"/>		
-			<result column="add_province" property="addProvince"/>		
-			<result column="add_city" property="addCity"/>		
-			<result column="add_detailInfo" property="addDetailInfo"/>		
-			<result column="add_nationalCode" property="addNationalCode"/>		
-			<result column="add_tele" property="addTele"/>		
-			<result column="add_default" property="addDefault"/>		
-		</resultMap>
-		
-		<!--接受用户的收货的地址 -->
-		<insert id="saveWeiAdd" parameterType="address">
-			<!-- selectKey 将 SELECT LAST_INSERT_ID() 执行结果放入传入的model的中主键中-->
-			<!-- keyProperty 即传入的model的主键的属性-->
-			<!-- order="AFTER" 即表示 SELECT LAST_INSERT_ID() 在insert执行之后执行，多用于自增主键-->
-			<!-- order="BEFORE" 即表示 SELECT LAST_INSERT_ID() 在insert执行之前执行，多用于非自增主键，如uuid主键（SELECT uuid()）-->
-			<!-- resultType="" 即表示 SELECT LAST_INSERT_ID() 返回结果的类型-->
-			<selectKey resultType="Integer" order="AFTER" keyProperty="addId">
-          		SELECT LAST_INSERT_ID()
-      		</selectKey>
-			insert into address
-		<trim prefix="("  suffix=")"  suffixOverrides=",">
-			<!-- cart_id 不先进行测试  -->
+<mapper namespace="com.nsc.backend.mapper.AddressMapper">
+	<!-- 基本的resultmap -->
+	<resultMap type="address" id="addResultMap">
+		<id column="add_id" property="addId" />
+		<result column="add_userName" property="addUserName" />
+		<result column="add_postalCode" property="addPostalCode" />
+		<result column="add_county" property="addCounty" />
+		<result column="add_province" property="addProvince" />
+		<result column="add_city" property="addCity" />
+		<result column="add_detailInfo" property="addDetailInfo" />
+		<result column="add_nationalCode" property="addNationalCode" />
+		<result column="add_tele" property="addTele" />
+		<result column="add_default" property="addDefault" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		add_id, add_userName, add_postalCode, add_county,
+		add_province, add_city,
+		add_detailInfo,
+		add_tele, add_nationalCode,
+		add_default, user_id
+	</sql>
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem"
+										open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem"
+										open="(" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+
+	<!--接受用户的收货的地址 -->
+	<insert id="saveWeiAdd" parameterType="address">
+		<!-- selectKey 将 SELECT LAST_INSERT_ID() 执行结果放入传入的model的中主键中 -->
+		<!-- keyProperty 即传入的model的主键的属性 -->
+		<!-- order="AFTER" 即表示 SELECT LAST_INSERT_ID() 在insert执行之后执行，多用于自增主键 -->
+		<!-- order="BEFORE" 即表示 SELECT LAST_INSERT_ID() 在insert执行之前执行，多用于非自增主键，如uuid主键（SELECT 
+			uuid()） -->
+		<!-- resultType="" 即表示 SELECT LAST_INSERT_ID() 返回结果的类型 -->
+		<selectKey resultType="Integer" order="AFTER" keyProperty="addId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into address
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<!-- cart_id 不先进行测试 -->
 			<if test="addId !=null">
 				add_id,
 			</if>
@@ -73,51 +148,51 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				#{addUserName },
 			</if>
 			<if test="addPostalCode !=null">
-					#{ addPostalCode},
+				#{ addPostalCode},
 			</if>
 			<if test="addCounty !=null">
-					#{ addCounty},
+				#{ addCounty},
 			</if>
 			<if test="addProvince !=null">
-					#{ addProvince},
+				#{ addProvince},
 			</if>
 			<if test="addCity !=null">
-					#{addCity },
+				#{addCity },
 			</if>
 			<if test="addDetailInfo !=null">
-					#{ addDetailInfo},
+				#{ addDetailInfo},
 			</if>
 			<if test="addNationalCode !=null">
-					#{addNationalCode },
+				#{addNationalCode },
 			</if>
 			<if test="addTele !=null">
-					#{addTele },
+				#{addTele },
 			</if>
 			<if test="addDefault !=null">
-					#{ addDefault},
+				#{ addDefault},
 			</if>
 			<if test="user !=null">
-				    #{user.userId},
+				#{user.userId},
 			</if>
 		</trim>
-		</insert>
-		
-		<!-- 展示用户的所有收货地址 -->
-		<select id="findAllAddress" parameterType="Integer" resultMap="addResultMap">
-			select 
-			address.*
-			from address
-			where user_id = #{userId}	
-		</select>
-		
-		<!-- 修改用户收货地址 -->
-		<update id="updateAddress" parameterType="address">
-			update address
+	</insert>
+
+	<!-- 展示用户的所有收货地址 -->
+	<select id="findAllAddress" parameterType="Integer" resultMap="addResultMap">
+		select
+		address.*
+		from address
+		where user_id = #{userId}
+	</select>
+
+	<!-- 修改用户收货地址 -->
+	<update id="updateAddress" parameterType="address">
+		update address
 		<trim prefix="set" suffixOverrides=",">
 			<if test="addUserName !=null">add_userName = #{addUserName} ,</if>
 			<if test="addPostalCode !=null"> add_postalCode= #{addPostalCode} ,</if>
 			<if test="addCounty !=null">add_county = #{addCounty},</if>
-			<if test="addProvince !=null" >add_province = #{addProvince} ,</if>
+			<if test="addProvince !=null">add_province = #{addProvince} ,</if>
 			<if test="addCity !=null">add_city = #{addCity} ,</if>
 			<if test="addDetailInfo !=null">add_detailInfo = #{addDetailInfo} ,</if>
 			<if test="addNationalCode !=null">add_nationalCode = #{addNationalCode} ,</if>
@@ -125,36 +200,55 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="addDefault !=null">add_default = #{addDefault} ,</if>
 			<if test="user !=null">user_id = #{user.userId} ,</if>
 		</trim>
-			where add_id = #{addId}		
-		</update>
-		<!-- 加载用户的默认地址 -->
-		<select id="findDefaultAdd" parameterType="Integer"  resultMap="addResultMap">
-			select 
-			address.*
-			from address
-			where add_default = true
+		where add_id = #{addId}
+	</update>
+	<!-- 加载用户的默认地址 -->
+	<select id="findDefaultAdd" parameterType="Integer" resultMap="addResultMap">
+		select
+		address.*
+		from address
+		where add_default = true
+		and user_id =
+		#{userId}
+	</select>
+
+	<!-- 查找出address -->
+	<select id="findAddressById" parameterType="Integer" resultMap="addResultMap">
+		select
+		address.*
+		from address
+		where
+		add_id = #{addId}
+	</select>
+	<select id="findAddressByIdAndUserId" resultMap="addResultMap">
+		select
+		address.*
+		from address
+		where
+		add_id = #{addId}
+		<if test="userId != null">
 			and user_id = #{userId}
-		</select>
-		
-		<!-- 查找出address -->
-		<select id="findAddressById" parameterType="Integer"  resultMap="addResultMap">
-			select 
-			address.*
-			from address
-			where 
-			 add_id = #{addId}
-		</select>
-		<select id="findAddressByIdAndUserId"  resultMap="addResultMap">
-			select 
-			address.*
-			from address
-			where 
-			 add_id = #{addId}
-			<if test="userId != null">
-				and user_id = #{userId}
-			</if>
-		</select>
-	</mapper>
+		</if>
+	</select>
+
+	<select id="selectByExample" parameterType="com.nsc.backend.entity.AddressExample"
+		resultMap="addResultMap">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from address
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+
+
+</mapper>
 
 
 

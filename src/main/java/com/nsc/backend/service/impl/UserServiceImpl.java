@@ -75,4 +75,15 @@ public class UserServiceImpl implements IUserService {
 		}
 	}
 
+	@Override
+	public Integer findUserIdByUniondId(String unionId) {
+		
+		Integer userId = userMapper.findUserByUnionId(unionId);
+		if(userId != null) {
+			return userId;
+		}
+		
+		return null;
+	}
+
 }

@@ -5,50 +5,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.nsc.backend.mapper.ChangeMapper">
 
 	<resultMap id="bookResultMap" type="book">
-		<!-- <id column="book_id" jdbcType="INTEGER" property="bookId" />
-		<result column="book_ISBN" jdbcType="VARCHAR" property="bookISBN" />
-		<result column="book_name" jdbcType="VARCHAR" property="bookName" />
-		<result column="book_unitPrice" jdbcType="DOUBLE" property="bookUnitPrice" />
-		<result column="book_author" jdbcType="VARCHAR" property="bookAuthor" />
-		<result column="book_pubTime" jdbcType="TIMESTAMP" property="bookPubTime" />
-		<result column="book_priTime" jdbcType="TIMESTAMP" property="bookPriTime" />
-		<result column="book_edtion" jdbcType="VARCHAR" property="bookEdtion" />
-		<result column="book_impression" jdbcType="VARCHAR" property="bookImpression" />
-		<result column="book_size" jdbcType="VARCHAR" property="bookSize" />
-		<result column="book_paper" jdbcType="VARCHAR" property="bookPaper" />
-		<result column="book_packing" jdbcType="VARCHAR" property="bookPacking" />
-		<result column="book_suit" jdbcType="VARCHAR" property="bookSuit" />
-		<result column="book_imgUrl" jdbcType="VARCHAR" property="bookImgUrl" />
-		<result column="book_stock" jdbcType="INTEGER" property="bookStock" />
-		<result column="book_validityPeriod" jdbcType="TIMESTAMP"
-			property="bookValidityPeriod" />
-		<result column="book_originalPrice" jdbcType="INTEGER"
-			property="bookOriginalPrice" />
-		<result column="book_isDetele" jdbcType="BIT" property="bookIsDetele" />
-		<result column="book_keyWord1" jdbcType="VARCHAR" property="bookKeyWord1" />
-		<result column="book_keyWord2" jdbcType="VARCHAR" property="bookKeyWord2" />
-		<result column="book_seriesAb" jdbcType="VARCHAR" property="bookSeriesAb" />
-		<result column="book_publicSort" jdbcType="VARCHAR" property="bookPublicSort" />
-		<result column="book_scores" jdbcType="VARCHAR" property="bookScores" />
-		<result column="book_code" jdbcType="VARCHAR" property="bookCode" />
-		<result column="book_titles" jdbcType="VARCHAR" property="bookTitles" />
-		<result column="book_measurementUnit" jdbcType="VARCHAR"
-			property="bookMeasurementUnit" />
-		<result column="cate_id" jdbcType="INTEGER" property="cateId" />
-		<result column="publish_house" jdbcType="VARCHAR" property="publishHouse" />
-		<result column="store_id" jdbcType="INTEGER" property="storeId" />
-		<result column="store_name" jdbcType="VARCHAR" property="storeName" />
-		<result column="evaluate_id" jdbcType="INTEGER" property="evaluateId" />
-		<result column="book_discount" jdbcType="DECIMAL" property="bookDiscount" />
-		<result column="book_note" jdbcType="VARCHAR" property="bookNote" />
-		<result column="order_freight" jdbcType="DECIMAL" property="orderFreight" />
-
-		<result column="book_preface" jdbcType="LONGVARCHAR" property="bookPreface" />
-		<result column="book_conBrief" jdbcType="LONGVARCHAR" property="bookConBrief" />
-		<result column="book_authorBrief" jdbcType="LONGVARCHAR"
-			property="bookAuthorBrief" />
-		<result column="book_catalog" jdbcType="LONGVARCHAR" property="bookCatalog" />
-		<result column="book_picture" jdbcType="LONGVARCHAR" property="bookPicture" /> -->
 		<id     column="book_id" property="bookId"/>
 		<result column="book_ISBN" property="bookISBN"/>
 		<result column="book_name" property="bookName"/>
@@ -94,6 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<result property="secondCateName" column="secondCateName" />
 		</association>
 	</resultMap>
+	
 	<sql id="Base_Column_List">
 		book_id, book_ISBN, book_name, book_unitPrice, book_author, book_pubTime,
 		book_priTime,

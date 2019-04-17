@@ -30,7 +30,7 @@ import com.nsc.web.util.backstate.BackState;
 import com.nsc.web.util.backstate.OpState;
 
 /**    
- * 将购物车，提交生成订单
+ * 将购物车，提交生成订单(弃)
  * @author Lenovo
  */
 @Controller

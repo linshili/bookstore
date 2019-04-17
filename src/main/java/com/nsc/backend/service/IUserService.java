@@ -11,10 +11,17 @@ public interface IUserService {
 	
 	/**
 	 * 根据全局唯一标识unionId查询用户
-	 * @param unionId
-	 * @return
+	 * @param unionId 全局唯一标识unionId
+	 * @return userId
 	 */
 	User findUserByUnionId(String unionId);
+	
+	/**
+	 * 根据全局唯一标识unionId查询用户
+	 * @param unionId
+	 * @return userId
+	 */
+	Integer findUserIdByUniondId(String unionId);
 	
 	/**
 	 * 根据传入的用户保存到数据库

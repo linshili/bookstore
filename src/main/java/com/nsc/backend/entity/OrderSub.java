@@ -7,6 +7,8 @@ public class OrderSub {
     private Integer orderGoodsId;
 
     private Integer orderId;
+    
+    private OrderSup orderSup;
 
     private String ordergoodsNumber;
 
@@ -21,6 +23,8 @@ public class OrderSub {
     private BigDecimal orderGoodsTotalPrice;
 
     private Integer bookId;
+    
+    private Book book;
 
     private Integer storeId;
 
@@ -35,8 +39,16 @@ public class OrderSub {
     public void setOrderGoodsId(Integer orderGoodsId) {
         this.orderGoodsId = orderGoodsId;
     }
+    
+    public OrderSup getOrderSup() {
+		return orderSup;
+	}
 
-    public Integer getOrderId() {
+	public void setOrderSup(OrderSup orderSup) {
+		this.orderSup = orderSup;
+	}
+
+	public Integer getOrderId() {
         return orderId;
     }
 
@@ -92,9 +104,15 @@ public class OrderSub {
         this.orderGoodsTotalPrice = orderGoodsTotalPrice;
     }
 
-    
+    public Book getBook() {
+		return book;
+	}
 
-    public Integer getBookId() {
+	public void setBook(Book book) {
+		this.book = book;
+	}
+
+	public Integer getBookId() {
 		return bookId;
 	}
 

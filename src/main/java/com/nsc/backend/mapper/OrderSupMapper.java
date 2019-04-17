@@ -37,7 +37,7 @@ public interface OrderSupMapper {
      */
     BigDecimal getTotalAcount(@Param("orderNum") String orderNum);
     
-    int updateOrderBasePayTime(@Param("orderNum") String orderNumber, @Param("payTime") String payTime, @Param("tMerchantnumber") String tMerchantnumber, @Param("orderNote") String orderNote);
+    int updateOrderBaseWxPayTime(@Param("orderNum") String orderNumber, @Param("payTime") String payTime, @Param("tMerchantnumber") String tMerchantnumber, @Param("orderNote") String orderNote);
 
     int updateByExampleSelective(@Param("record") OrderSup record, @Param("example") OrderSupExample example);
 

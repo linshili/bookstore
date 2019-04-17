@@ -132,6 +132,9 @@
       #{orderIsvalid,jdbcType=INTEGER}, #{orderNote,jdbcType=VARCHAR} )
   </insert>
   <insert id="insertSelective" parameterType="com.nsc.backend.entity.OrderSup">
+    <selectKey resultType="Integer" order="AFTER" keyProperty="orderId">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
     insert into order_base
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="orderId != null">
@@ -237,12 +240,13 @@
   </update>
   
     <!-- 通过主订单编号更新主订单信息(支付时间，交易单号) -->
-  <update id="updateOrderBasePayTime"  >
+  <update id="updateOrderBaseWxPayTime"  >
   	update order_base
-  		set order_payTime = #{payTime},
+  		set 
+  		order_payTime = #{payTime},
   		tradeTable_number = #{tMerchantnumber},
   		order_note = #{orderNote},
-  		order_ispay = 1
+  		order_ispay = 1, order_isvalid = 1,tradeTable_method = 1
   	where order_number = #{orderNum}
   </update>
   
@@ -378,4 +382,6 @@
       order_note = #{orderNote,jdbcType=INTEGER}
     where order_id = #{orderId,jdbcType=INTEGER}
   </update>
+  
+  
 </mapper>

@@ -59,8 +59,8 @@ public class AddressController {
 			add.setAddDefault(true);
 			add.setUser(user);
 			System.out.println("add=====================" + add);
-			boolean isOk =  addressServiceImpl.saveWeiAdd(add);
-			if(isOk == true) {
+			Integer id =  addressServiceImpl.saveWeiAdd(add);
+			if(id != null) {
 				return OpState.OK;
 			}
 			
@@ -116,9 +116,9 @@ public class AddressController {
 				}
 			}
 		}
-		boolean isOK = addressServiceImpl.saveWeiAdd(add);
-		if(isOK == true) {
-			LogUtil.out(classname, "addAddress", "保存地址到数据库失败");
+		Integer id = addressServiceImpl.saveWeiAdd(add);
+		if(id != null) {
+			LogUtil.out(classname, "addAddress", "保存地址到数据库成功");
 			// 返回状态码
 			return OpState.OK;
 		}

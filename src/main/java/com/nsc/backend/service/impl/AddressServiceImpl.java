@@ -1,11 +1,13 @@
 package com.nsc.backend.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nsc.backend.entity.Address;
+import com.nsc.backend.entity.AddressExample;
 import com.nsc.backend.mapper.AddressMapper;
 import com.nsc.backend.service.IAddressService;
 
@@ -17,13 +19,13 @@ public class AddressServiceImpl implements IAddressService {
 	private AddressMapper addMapper;
 	
 	//接受微信授权地址，并且如果能够接受到的话，设为默认地址
-	public boolean saveWeiAdd(Address add) {
-		int result = addMapper.saveWeiAdd(add);
+	public Integer saveWeiAdd(Address add) {
+		Integer result = addMapper.saveWeiAdd(add);
 		if(result == 1) {
 			//保存成功
-			return true;
+			return result;
 		}
-		return false;
+		return null;
 	}
 
 	//获取用户的所有与收货地址
@@ -53,6 +55,16 @@ public class AddressServiceImpl implements IAddressService {
 	@Override
 	public Address findAddressByIdAndUserId(Integer addId,Integer userId) {
 		return addMapper.findAddressByIdAndUserId(addId, userId);
+	}
+	
+	@Override
+	public List<Address> findAddressesByExample(AddressExample example ){
+		
+		List<Address> list = new ArrayList<>();
+		
+		list = addMapper.selectByExample(example);
+		
+		return list;
 	}
 	
 }
